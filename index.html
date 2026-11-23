@@ -6,7 +6,8 @@
   <title>NOTCH5 STUDIO CRIATIVO — Vitrine</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; color: #222; }
-    header { background: #111; color: #fff; padding: 36px 20px; text-align: center; }
+    header { background: #111; color: #fff; padding: 30px 20px; text-align: center; position: relative; }
+    .btn-carrinho-topo { position: fixed; top: 16px; right: 16px; z-index: 900; background: #0a7; color: #fff; border: none; padding: 11px 16px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.25); }
     main { max-width: 960px; margin: 28px auto; padding: 0 16px; }
     .vitrine { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
     .produto { background: #fff; border-radius: 10px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; }
@@ -20,9 +21,35 @@
     .btn-info { background: #111; color: #fff; border: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; }
     .btn-info:hover { background: #0a7; }
     footer { background: #222; color: #ccc; text-align: center; padding: 20px; margin-top: 40px; font-size: 14px; }
+
+    /* Carrinho e Checkout estilo loja */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: flex-end; }
+    .overlay.ativo { display: flex; }
+    .painel-carrinho { background: #fff; width: 100%; max-width: 440px; height: 100%; overflow-y: auto; padding: 22px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; }
+    .topo-carrinho { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding-bottom: 12px; margin-bottom: 14px; }
+    .topo-carrinho h2 { margin: 0; font-size: 20px; }
+    .btn-fechar { background: #eee; border: none; font-size: 18px; font-weight: bold; width: 34px; height: 34px; border-radius: 6px; cursor: pointer; }
+    .item-carrinho { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 10px 0; gap: 10px; }
+    .item-info { flex: 1; font-size: 14px; }
+    .item-info strong { display: block; margin-bottom: 3px; }
+    .qtd-controles { display: flex; align-items: center; gap: 6px; }
+    .qtd-controles button { width: 26px; height: 26px; border: 1px solid #ccc; background: #f9f9f9; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .bloco-checkout { background: #f8f8f8; border: 1px solid #e2e2e2; border-radius: 8px; padding: 14px; margin-top: 14px; }
+    .bloco-checkout h3 { margin: 0 0 10px; font-size: 15px; }
+    .campo { width: 100%; padding: 9px 10px; margin-bottom: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+    .linha-cep { display: flex; gap: 8px; margin-bottom: 8px; }
+    .linha-cep input { flex: 1; margin-bottom: 0; }
+    .btn-cep { background: #111; color: #fff; border: none; padding: 0 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .resumo-valores { border-top: 1px solid #ddd; margin-top: 14px; padding-top: 12px; font-size: 15px; }
+    .resumo-linha { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .resumo-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #0a7; margin-top: 8px; }
+    .btn-finalizar { width: 100%; background: #0a7; color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 14px; }
+    .btn-finalizar:hover { background: #085; }
   </style>
 </head>
 <body>
+  <button class="btn-carrinho-topo" type="button" onclick="abrirCarrinho()">Carrinho (<span id="contador-carrinho">0</span>)</button>
+
   <header>
     <h1>NOTCH5 STUDIO CRIATIVO</h1>
     <p>SUBLIMAÇÃO - PERSONALIZAÇÃO - ELÉTRICA - TURISMO</p>
@@ -39,7 +66,7 @@
         </div>
         <div>
           <div class="preco">R$ 15,00</div>
-          <button class="btn-comprar" type="button" onclick="comprarProduto('Adesivo em Vinil Sublimático', 'R$ 15,00')">Comprar</button>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Adesivo em Vinil Sublimático', 15.00)">Comprar</button>
         </div>
       </div>
 
@@ -50,7 +77,7 @@
         </div>
         <div>
           <div class="preco">R$ 25,00</div>
-          <button class="btn-comprar" type="button" onclick="comprarProduto('Cartela de Adesivos', 'R$ 25,00')">Comprar</button>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Cartela de Adesivos', 25.00)">Comprar</button>
         </div>
       </div>
 
@@ -62,7 +89,7 @@
         </div>
         <div>
           <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="comprarProduto('Produto 3', 'R$ 0,00')">Comprar</button>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 3', 0.00)">Comprar</button>
         </div>
       </div>
 
@@ -74,7 +101,7 @@
         </div>
         <div>
           <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="comprarProduto('Produto 4', 'R$ 0,00')">Comprar</button>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 4', 0.00)">Comprar</button>
         </div>
       </div>
 
@@ -86,7 +113,7 @@
         </div>
         <div>
           <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="comprarProduto('Produto 5', 'R$ 0,00')">Comprar</button>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 5', 0.00)">Comprar</button>
         </div>
       </div>
 
@@ -98,7 +125,7 @@
         </div>
         <div>
           <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="comprarProduto('Produto 6', 'R$ 0,00')">Comprar</button>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 6', 0.00)">Comprar</button>
         </div>
       </div>
 
@@ -110,7 +137,7 @@
         </div>
         <div>
           <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="comprarProduto('Produto 7', 'R$ 0,00')">Comprar</button>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 7', 0.00)">Comprar</button>
         </div>
       </div>
 
@@ -122,7 +149,7 @@
         </div>
         <div>
           <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="comprarProduto('Produto 8', 'R$ 0,00')">Comprar</button>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 8', 0.00)">Comprar</button>
         </div>
       </div>
 
@@ -134,7 +161,7 @@
         </div>
         <div>
           <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="comprarProduto('Produto 9', 'R$ 0,00')">Comprar</button>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 9', 0.00)">Comprar</button>
         </div>
       </div>
 
@@ -146,7 +173,7 @@
         </div>
         <div>
           <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="comprarProduto('Produto 10', 'R$ 0,00')">Comprar</button>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 10', 0.00)">Comprar</button>
         </div>
       </div>
 
@@ -158,7 +185,7 @@
         </div>
         <div>
           <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="comprarProduto('Produto 11', 'R$ 0,00')">Comprar</button>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 11', 0.00)">Comprar</button>
         </div>
       </div>
 
@@ -173,11 +200,185 @@
     <p>NOTCH5 STUDIO CRIATIVO — Todos os direitos reservados</p>
   </footer>
 
+  <!-- Carrinho + Entrega + Dados do Cliente + Pagamento -->
+  <div class="overlay" id="overlay-carrinho">
+    <div class="painel-carrinho">
+      <div>
+        <div class="topo-carrinho">
+          <h2>Meu Carrinho</h2>
+          <button class="btn-fechar" type="button" onclick="fecharCarrinho()">✕</button>
+        </div>
+
+        <div id="lista-itens-carrinho"></div>
+
+        <div class="bloco-checkout">
+          <h3>1. Entrega e Frete</h3>
+          <select class="campo" id="tipo-entrega" onchange="atualizarResumo()">
+            <option value="Retirada no local">Retirada no local (Grátis)</option>
+            <option value="Entrega / Envio">Entrega / Envio (A combinar no CEP)</option>
+          </select>
+          <div class="linha-cep">
+            <input class="campo" type="text" id="cep-cliente" placeholder="Digite seu CEP (ex: 09900-000)">
+            <button class="btn-cep" type="button" onclick="consultarCep()">Calcular</button>
+          </div>
+          <div id="status-cep" style="font-size:13px; color:#555; margin-bottom:6px;"></div>
+          <input class="campo" type="text" id="endereco-cliente" placeholder="Rua, número, bairro e cidade">
+        </div>
+
+        <div class="bloco-checkout">
+          <h3>2. Seus Dados</h3>
+          <input class="campo" type="text" id="nome-cliente" placeholder="Seu nome completo">
+          <input class="campo" type="tel" id="whats-cliente" placeholder="Seu WhatsApp com DDD">
+        </div>
+
+        <div class="bloco-checkout">
+          <h3>3. Forma de Pagamento</h3>
+          <select class="campo" id="forma-pagamento">
+            <option value="Pix">Pix</option>
+            <option value="Cartão de Crédito">Cartão de Crédito</option>
+            <option value="Cartão de Débito">Cartão de Débito</option>
+            <option value="Dinheiro">Dinheiro</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <div class="resumo-valores">
+          <div class="resumo-linha"><span>Subtotal:</span><span id="valor-subtotal">R$ 0,00</span></div>
+          <div class="resumo-linha"><span>Entrega:</span><span id="valor-frete">Grátis</span></div>
+          <div class="resumo-total"><span>Total:</span><span id="valor-total">R$ 0,00</span></div>
+        </div>
+        <button class="btn-finalizar" type="button" onclick="finalizarPedido()">Finalizar Compra</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    function comprarProduto(nomeProduto, precoProduto) {
-      var telefone = "5511999999999";
-      var mensagem = "Olá! Quero comprar: " + nomeProduto + " (" + precoProduto + ").";
-      var url = "https://wa.me/" + telefone + "?text=" + encodeURIComponent(mensagem);
+    var carrinho = [];
+
+    function formatarReal(valor) {
+      return "R$ " + valor.toFixed(2).replace(".", ",");
+    }
+
+    function adicionarAoCarrinho(nome, preco) {
+      var existente = carrinho.find(function(item) { return item.nome === nome; });
+      if (existente) {
+        existente.qtd += 1;
+      } else {
+        carrinho.push({ nome: nome, preco: preco, qtd: 1 });
+      }
+      atualizarResumo();
+      abrirCarrinho();
+    }
+
+    function alterarQtd(index, delta) {
+      carrinho[index].qtd += delta;
+      if (carrinho[index].qtd <= 0) {
+        carrinho.splice(index, 1);
+      }
+      atualizarResumo();
+    }
+
+    function consultarCep() {
+      var cep = document.getElementById("cep-cliente").value.replace(/\D/g, "");
+      var status = document.getElementById("status-cep");
+      if (cep.length !== 8) {
+        status.textContent = "Informe um CEP válido com 8 números.";
+        return;
+      }
+      status.textContent = "Buscando endereço...";
+      fetch("https://viacep.com.br/ws/" + cep + "/json/")
+        .then(function(r) { return r.json(); })
+        .then(function(dados) {
+          if (dados.erro) {
+            status.textContent = "CEP não encontrado.";
+          } else {
+            document.getElementById("endereco-cliente").value =
+              (dados.logradouro || "") + ", Nº  - " + (dados.bairro || "") + ", " + dados.localidade + "/" + dados.uf;
+            document.getElementById("tipo-entrega").value = "Entrega / Envio";
+            status.textContent = "Prazo estimado: 2 a 5 dias úteis (frete a confirmar).";
+            atualizarResumo();
+          }
+        })
+        .catch(function() {
+          status.textContent = "Preencha o endereço manualmente abaixo.";
+        });
+    }
+
+    function atualizarResumo() {
+      var lista = document.getElementById("lista-itens-carrinho");
+      var contador = document.getElementById("contador-carrinho");
+      lista.innerHTML = "";
+      var totalItens = 0;
+      var subtotal = 0;
+
+      if (carrinho.length === 0) {
+        lista.innerHTML = '<p style="color:#666; font-size:14px;">Seu carrinho está vazio.</p>';
+      } else {
+        carrinho.forEach(function(item, i) {
+          totalItens += item.qtd;
+          subtotal += item.preco * item.qtd;
+          var div = document.createElement("div");
+          div.className = "item-carrinho";
+          div.innerHTML =
+            '<div class="item-info"><strong>' + item.nome + '</strong><span>' + formatarReal(item.preco) + ' cada</span></div>' +
+            '<div class="qtd-controles">' +
+              '<button type="button" onclick="alterarQtd(' + i + ', -1)">-</button>' +
+              '<span>' + item.qtd + '</span>' +
+              '<button type="button" onclick="alterarQtd(' + i + ', 1)">+</button>' +
+            '</div>';
+          lista.appendChild(div);
+        });
+      }
+
+      var tipoEntrega = document.getElementById("tipo-entrega").value;
+      document.getElementById("valor-frete").textContent = tipoEntrega === "Retirada no local" ? "Grátis" : "A combinar";
+      contador.textContent = totalItens;
+      document.getElementById("valor-subtotal").textContent = formatarReal(subtotal);
+      document.getElementById("valor-total").textContent = formatarReal(subtotal);
+    }
+
+    function abrirCarrinho() {
+      document.getElementById("overlay-carrinho").classList.add("ativo");
+    }
+
+    function fecharCarrinho() {
+      document.getElementById("overlay-carrinho").classList.remove("ativo");
+    }
+
+    function finalizarPedido() {
+      if (carrinho.length === 0) {
+        alert("Adicione pelo menos um produto no carrinho.");
+        return;
+      }
+      var nome = document.getElementById("nome-cliente").value.trim();
+      var whatsCliente = document.getElementById("whats-cliente").value.trim();
+      var entrega = document.getElementById("tipo-entrega").value;
+      var cep = document.getElementById("cep-cliente").value.trim();
+      var endereco = document.getElementById("endereco-cliente").value.trim();
+      var pagamento = document.getElementById("forma-pagamento").value;
+
+      if (!nome) {
+        alert("Digite seu nome para finalizar.");
+        return;
+      }
+
+      var telefoneLoja = "5511999999999";
+      var linhasProdutos = carrinho.map(function(item) {
+        return "- " + item.qtd + "x " + item.nome + " (" + formatarReal(item.preco * item.qtd) + ")";
+      }).join("\n");
+
+      var total = carrinho.reduce(function(acc, item) { return acc + item.preco * item.qtd; }, 0);
+
+      var mensagem =
+        "Novo Pedido — NOTCH5 STUDIO CRIATIVO\n\n" +
+        "Itens:\n" + linhasProdutos + "\n\n" +
+        "Total: " + formatarReal(total) + "\n" +
+        "Entrega: " + entrega + (cep ? " | CEP: " + cep : "") + (endereco ? "\nEndereço: " + endereco : "") + "\n" +
+        "Pagamento: " + pagamento + "\n" +
+        "Cliente: " + nome + (whatsCliente ? " (" + whatsCliente + ")" : "");
+
+      var url = "https://wa.me/" + telefoneLoja + "?text=" + encodeURIComponent(mensagem);
       window.open(url, "_blank");
     }
 
