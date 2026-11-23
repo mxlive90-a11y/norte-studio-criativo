@@ -109,7 +109,7 @@
     .btn-finalizar:hover { background: #085; }
     .btn-finalizar:disabled { background: #6b7280; cursor: not-allowed; }
 
-    /* Comprovante e Pix dentro do próprio site */
+    /* Comprovante e Pagamento dentro do próprio site */
     .comprovante-box { display: none; background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 14px; margin-top: 14px; }
     .comprovante-box.ativo { display: block; }
     .comprovante-box h3 { margin: 0 0 8px; color: #065f46; font-size: 16px; }
@@ -117,6 +117,8 @@
     .status-envio-email { font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #065f46; }
     .pagamento-instrucoes { background: #fff; border: 1px solid #a7f3d0; border-radius: 6px; padding: 10px; margin-bottom: 10px; font-size: 13px; color: #1f2937; line-height: 1.5; }
     .pagamento-instrucoes strong { color: #065f46; }
+    .btn-infinitepay { display: block; width: 100%; box-sizing: border-box; text-align: center; text-decoration: none; background: #0033c6; color: #fff; border: none; padding: 11px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 8px; }
+    .btn-infinitepay:hover { background: #00248f; }
     .btn-pix { width: 100%; background: #0a7; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 8px; }
     .btn-pix:hover { background: #085; }
     .btn-copiar { width: 100%; background: #111; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 8px; }
@@ -411,6 +413,7 @@
             <h3>3. Forma de Pagamento</h3>
             <select class="campo" id="forma-pagamento">
               <option value="Pix (Chave 39618542890)">Pix (Chave: 39618542890)</option>
+              <option value="InfinitePay — Link de Pagamento (https://linknabio.gg/notch5)">InfinitePay — Link de Pagamento</option>
             </select>
           </div>
         </div>
@@ -422,9 +425,12 @@
           <div class="pagamento-instrucoes">
             <strong>Pagamento via Pix:</strong><br>
             Chave Pix: <strong>39618542890</strong><br>
-            Favorecido: <strong>Anderson Alves da Rocha</strong>
+            Favorecido: <strong>Anderson Alves da Rocha</strong><br><br>
+            <strong>Pagamento via InfinitePay:</strong><br>
+            Abra o link para escolher o valor e pagar.
           </div>
 
+          <a class="btn-infinitepay" href="https://linknabio.gg/notch5" target="_blank" rel="noopener noreferrer">Abrir Link InfinitePay</a>
           <button class="btn-pix" type="button" onclick="copiarChavePix()">Copiar Chave Pix (39618542890)</button>
           <div class="comprovante-texto" id="comprovante-texto"></div>
           <button class="btn-copiar" type="button" onclick="copiarComprovante()">Copiar Resumo do Pedido</button>
@@ -447,6 +453,7 @@
     var FORMSPREE_URL = "https://formspree.io/f/mqpqgbyy";
     var CHAVE_PIX_NOTCH5 = "39618542890";
     var TITULAR_PIX_NOTCH5 = "Anderson Alves da Rocha";
+    var LINK_INFINITEPAY_NOTCH5 = "https://linknabio.gg/notch5";
 
     var slideAtual = 0;
     var trilho = document.getElementById("slider-trilho");
@@ -760,7 +767,8 @@
         (cep ? "CEP: " + cep + "\n" : "") +
         (endereco ? "Endereço: " + endereco + "\n" : "") +
         "Pagamento: " + pagamento + "\n" +
-        "Pix: " + CHAVE_PIX_NOTCH5 + " (" + TITULAR_PIX_NOTCH5 + ")";
+        "Pix: " + CHAVE_PIX_NOTCH5 + " (" + TITULAR_PIX_NOTCH5 + ")\n" +
+        "InfinitePay: " + LINK_INFINITEPAY_NOTCH5;
 
       try {
         var historico = JSON.parse(localStorage.getItem("notch5_pedidos") || "[]");
@@ -788,6 +796,7 @@
         endereco: endereco || "Não informado",
         pagamento: pagamento,
         chave_pix: CHAVE_PIX_NOTCH5 + " (" + TITULAR_PIX_NOTCH5 + ")",
+        link_infinitepay: LINK_INFINITEPAY_NOTCH5,
         resumo_completo: resumo
       };
 
