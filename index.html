@@ -109,12 +109,16 @@
     .btn-finalizar:hover { background: #085; }
     .btn-finalizar:disabled { background: #6b7280; cursor: not-allowed; }
 
-    /* Comprovante dentro do próprio site */
+    /* Comprovante e Pix dentro do próprio site */
     .comprovante-box { display: none; background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 14px; margin-top: 14px; }
     .comprovante-box.ativo { display: block; }
     .comprovante-box h3 { margin: 0 0 8px; color: #065f46; font-size: 16px; }
     .comprovante-texto { white-space: pre-line; font-size: 13px; color: #1f2937; background: #fff; border: 1px solid #d1fae5; border-radius: 6px; padding: 10px; margin-bottom: 10px; }
     .status-envio-email { font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #065f46; }
+    .pagamento-instrucoes { background: #fff; border: 1px solid #a7f3d0; border-radius: 6px; padding: 10px; margin-bottom: 10px; font-size: 13px; color: #1f2937; line-height: 1.5; }
+    .pagamento-instrucoes strong { color: #065f46; }
+    .btn-pix { width: 100%; background: #0a7; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 8px; }
+    .btn-pix:hover { background: #085; }
     .btn-copiar { width: 100%; background: #111; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 8px; }
     .btn-copiar:hover { background: #0033c6; }
     .btn-novo-pedido { width: 100%; background: #e5e7eb; color: #111; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; }
@@ -406,10 +410,7 @@
           <div class="bloco-checkout">
             <h3>3. Forma de Pagamento</h3>
             <select class="campo" id="forma-pagamento">
-              <option value="Pix">Pix</option>
-              <option value="Cartão de Crédito">Cartão de Crédito</option>
-              <option value="Cartão de Débito">Cartão de Débito</option>
-              <option value="Dinheiro">Dinheiro</option>
+              <option value="Pix (Chave 39618542890)">Pix (Chave: 39618542890)</option>
             </select>
           </div>
         </div>
@@ -417,6 +418,14 @@
         <div class="comprovante-box" id="comprovante-pedido">
           <h3>Pedido Registrado no Site</h3>
           <div class="status-envio-email" id="status-envio-email"></div>
+
+          <div class="pagamento-instrucoes">
+            <strong>Pagamento via Pix:</strong><br>
+            Chave Pix: <strong>39618542890</strong><br>
+            Favorecido: <strong>Anderson Alves da Rocha</strong>
+          </div>
+
+          <button class="btn-pix" type="button" onclick="copiarChavePix()">Copiar Chave Pix (39618542890)</button>
           <div class="comprovante-texto" id="comprovante-texto"></div>
           <button class="btn-copiar" type="button" onclick="copiarComprovante()">Copiar Resumo do Pedido</button>
           <button class="btn-novo-pedido" type="button" onclick="iniciarNovoPedido()">Fazer Novo Pedido</button>
@@ -436,6 +445,8 @@
 
   <script>
     var FORMSPREE_URL = "https://formspree.io/f/mqpqgbyy";
+    var CHAVE_PIX_NOTCH5 = "39618542890";
+    var TITULAR_PIX_NOTCH5 = "Anderson Alves da Rocha";
 
     var slideAtual = 0;
     var trilho = document.getElementById("slider-trilho");
@@ -748,7 +759,8 @@
         "Prazo estimado: " + prazoEstimadoTexto + "\n" +
         (cep ? "CEP: " + cep + "\n" : "") +
         (endereco ? "Endereço: " + endereco + "\n" : "") +
-        "Pagamento: " + pagamento;
+        "Pagamento: " + pagamento + "\n" +
+        "Pix: " + CHAVE_PIX_NOTCH5 + " (" + TITULAR_PIX_NOTCH5 + ")";
 
       try {
         var historico = JSON.parse(localStorage.getItem("notch5_pedidos") || "[]");
@@ -775,6 +787,7 @@
         cep: cep || "Não informado",
         endereco: endereco || "Não informado",
         pagamento: pagamento,
+        chave_pix: CHAVE_PIX_NOTCH5 + " (" + TITULAR_PIX_NOTCH5 + ")",
         resumo_completo: resumo
       };
 
@@ -797,6 +810,18 @@
           carrinho = [];
           atualizarResumo();
         });
+    }
+
+    function copiarChavePix() {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(CHAVE_PIX_NOTCH5).then(function() {
+          alert("Chave Pix (" + CHAVE_PIX_NOTCH5 + ") copiada!");
+        }).catch(function() {
+          alert("Chave Pix: " + CHAVE_PIX_NOTCH5);
+        });
+      } else {
+        alert("Chave Pix: " + CHAVE_PIX_NOTCH5);
+      }
     }
 
     function copiarComprovante() {
