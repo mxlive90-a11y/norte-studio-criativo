@@ -21,6 +21,9 @@
     .formas-lista { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 12px; }
     .forma-item { background: #f4f4f4; border: 1px solid #ddd; padding: 10px 16px; border-radius: 6px; font-weight: bold; font-size: 14px; }
     .pix-info { margin: 0; font-size: 14px; color: #555; }
+    .info-extra { margin-top: 20px; text-align: center; }
+    .btn-info { background: #111; color: #fff; border: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; }
+    .btn-info:hover { background: #0a7; }
     footer { background: #222; color: #ccc; text-align: center; padding: 20px; margin-top: 40px; font-size: 14px; }
   </style>
 </head>
@@ -176,6 +179,10 @@
       </div>
       <p class="pix-info">Aceitamos Pix, Cartão de Crédito, Cartão de Débito e Dinheiro. Clique em Comprar para enviar o pedido no WhatsApp.</p>
     </section>
+
+    <div class="info-extra">
+      <button class="btn-info" type="button" onclick="abrirMaisInformacoes()">Mais Informações</button>
+    </div>
   </main>
 
   <footer>
@@ -189,6 +196,39 @@
       var mensagem = "Olá! Quero comprar: " + nomeProduto + " (" + precoProduto + "). Formas de pagamento: " + pagamento + ".";
       var url = "https://wa.me/" + telefone + "?text=" + encodeURIComponent(mensagem);
       window.open(url, "_blank");
+    }
+
+    function abrirMaisInformacoes() {
+      var janela = window.open("", "_blank");
+      janela.document.write(
+        '<!DOCTYPE html>' +
+        '<html lang="pt-BR">' +
+        '<head>' +
+        '<meta charset="UTF-8">' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+        '<title>Mais Informações — NOTCH5 STUDIO CRIATIVO</title>' +
+        '<style>' +
+        'body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; color: #222; }' +
+        'header { background: #111; color: #fff; padding: 30px 20px; text-align: center; }' +
+        'main { max-width: 800px; margin: 28px auto; padding: 0 16px; }' +
+        '.bloco { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }' +
+        '.bloco h2 { margin: 0 0 10px; font-size: 20px; color: #111; }' +
+        '.bloco p { margin: 0; font-size: 15px; line-height: 1.6; color: #444; }' +
+        'footer { background: #222; color: #ccc; text-align: center; padding: 20px; margin-top: 30px; font-size: 14px; }' +
+        '</style>' +
+        '</head>' +
+        '<body>' +
+        '<header><h1>NOTCH5 STUDIO CRIATIVO</h1><p>SUBLIMAÇÃO - PERSONALIZAÇÃO - ELÉTRICA - TURISMO</p></header>' +
+        '<main>' +
+        '<div class="bloco"><h2>Quem Somos</h2><p>A NOTCH5 STUDIO CRIATIVO atua com sublimação, personalização, serviços de elétrica e turismo, oferecendo atendimento dedicado e soluções sob encomenda.</p></div>' +
+        '<div class="bloco"><h2>Entrega</h2><p>As entregas e retiradas são combinadas diretamente pelo WhatsApp após a confirmação do pedido, de acordo com o prazo de produção e a localização do cliente.</p></div>' +
+        '<div class="bloco"><h2>Política de Privacidade</h2><p>Os dados informados durante o atendimento pelo WhatsApp são utilizados exclusivamente para orçamento, produção, pagamento e entrega dos pedidos, sem compartilhamento com terceiros.</p></div>' +
+        '</main>' +
+        '<footer><p>NOTCH5 STUDIO CRIATIVO — Todos os direitos reservados</p></footer>' +
+        '</body>' +
+        '</html>'
+      );
+      janela.document.close();
     }
   </script>
 </body>
