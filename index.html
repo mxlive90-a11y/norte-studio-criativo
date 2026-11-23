@@ -70,8 +70,8 @@
     .info-coluna h3 { margin: 0 0 8px; font-size: 16px; color: #0033c6; text-transform: uppercase; }
     .info-coluna p { margin: 0 0 10px; font-size: 14px; line-height: 1.6; color: #444; }
     .info-coluna p:last-child { margin-bottom: 0; }
-    .quem-somos-resto { display: none; }
-    .quem-somos-resto.aberto { display: inline; }
+    .quem-somos-resto, .entrega-resto { display: none; }
+    .quem-somos-resto.aberto, .entrega-resto.aberto { display: inline; }
     .btn-ler-mais-texto { background: #111; color: #fff; border: none; border-radius: 6px; font-weight: bold; font-size: 13px; padding: 7px 14px; margin-top: 8px; cursor: pointer; display: inline-block; }
     .btn-ler-mais-texto:hover { background: #0033c6; }
     .info-toggle-area { text-align: center; padding: 14px; background: #fff; }
@@ -332,7 +332,13 @@
           </div>
           <div class="info-coluna">
             <h3>Entrega</h3>
-            <p>As entregas e retiradas são combinadas diretamente pelo WhatsApp após a confirmação do pedido, de acordo com o prazo de produção (3 a 5 dias úteis para personalizados) e a localização do cliente.</p>
+            <p>
+              As entregas e retiradas são combinadas diretamente pelo WhatsApp após a confirmação do pedido,
+              <span class="entrega-resto" id="entrega-resto">
+                de acordo com o prazo de produção (3 a 5 dias úteis para personalizados), a modalidade escolhida (retirada grátis, entrega rápida na região ou Correios/transportadora para todo o Brasil) e a localização do cliente.
+              </span>
+            </p>
+            <button class="btn-ler-mais-texto" id="btn-ler-mais-entrega" type="button" onclick="alternarLeituraEntrega()">Leia mais</button>
           </div>
           <div class="info-coluna">
             <h3>Política de Privacidade</h3>
@@ -453,6 +459,13 @@
       var botao = document.getElementById("btn-ler-mais-texto");
       var aberto = resto.classList.toggle("aberto");
       botao.textContent = aberto ? "Mostrar menos" : "Ler mais";
+    }
+
+    function alternarLeituraEntrega() {
+      var resto = document.getElementById("entrega-resto");
+      var botao = document.getElementById("btn-ler-mais-entrega");
+      var aberto = resto.classList.toggle("aberto");
+      botao.textContent = aberto ? "Mostrar menos" : "Leia mais";
     }
 
     function consultarCepTopo() {
