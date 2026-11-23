@@ -11,7 +11,7 @@
     main { max-width: 960px; margin: 28px auto; padding: 0 16px; }
     h2 { margin: 0 0 16px; }
 
-    /* Slider estilo Casas Bahia (sem bloco de vantagens) */
+    /* Slider estilo Casas Bahia */
     .slider-wrapper { margin-bottom: 28px; }
     .slider-viewport { position: relative; width: 100%; overflow: hidden; border-radius: 12px; }
     .slider-trilho { display: flex; transition: transform 0.45s ease; }
@@ -30,7 +30,6 @@
     .slider-seta.ant { left: 10px; }
     .slider-seta.prox { right: 10px; }
 
-    /* Bolinhas abaixo do banner */
     .slider-pontos { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 12px; }
     .ponto { width: 10px; height: 10px; border-radius: 50%; background: #d1d5db; border: none; cursor: pointer; padding: 0; transition: all 0.25s ease; }
     .ponto.ativo { width: 13px; height: 13px; background: #0033c6; }
@@ -50,9 +49,17 @@
     .preco { font-size: 20px; font-weight: bold; color: #0a7; margin-bottom: 12px; }
     .btn-comprar { width: 100%; background: #111; color: #fff; border: none; padding: 11px 14px; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; }
     .btn-comprar:hover { background: #0a7; }
-    .info-extra { margin-top: 28px; text-align: center; }
-    .btn-info { background: #111; color: #fff; border: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; }
-    .btn-info:hover { background: #0a7; }
+
+    /* Sanfona Mais / Menos Informações estilo Casas Bahia */
+    .info-sanfona-box { margin-top: 32px; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
+    .info-conteudo-expansivel { display: none; padding: 22px 20px 10px; border-bottom: 1px solid #e5e7eb; }
+    .info-conteudo-expansivel.aberto { display: block; }
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+    .info-coluna h3 { margin: 0 0 8px; font-size: 16px; color: #0033c6; text-transform: uppercase; }
+    .info-coluna p { margin: 0; font-size: 14px; line-height: 1.6; color: #444; }
+    .info-toggle-area { text-align: center; padding: 14px; background: #fff; }
+    .btn-info-toggle { background: #fff; color: #0033c6; border: 1px solid #cbd5e1; padding: 11px 24px; border-radius: 8px; font-weight: bold; font-size: 14px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-info-toggle:hover { background: #f8fafc; }
 
     /* Rodapé rotativo */
     footer { background: #222; color: #ccc; text-align: center; padding: 20px; margin-top: 40px; font-size: 14px; min-height: 24px; }
@@ -279,8 +286,26 @@
 
     </div>
 
-    <div class="info-extra">
-      <button class="btn-info" type="button" onclick="abrirMaisInformacoes()">Mais Informações</button>
+    <div class="info-sanfona-box">
+      <div class="info-conteudo-expansivel" id="conteudo-mais-info">
+        <div class="info-grid">
+          <div class="info-coluna">
+            <h3>Quem Somos</h3>
+            <p>A NOTCH5 STUDIO CRIATIVO atua com sublimação, personalização, serviços de elétrica e turismo, oferecendo atendimento dedicado e soluções sob encomenda.</p>
+          </div>
+          <div class="info-coluna">
+            <h3>Entrega</h3>
+            <p>As entregas e retiradas são combinadas diretamente pelo WhatsApp após a confirmação do pedido, de acordo com o prazo de produção e a localização do cliente.</p>
+          </div>
+          <div class="info-coluna">
+            <h3>Política de Privacidade</h3>
+            <p>Os dados informados durante o atendimento pelo WhatsApp são utilizados exclusivamente para orçamento, produção, pagamento e entrega dos pedidos, sem compartilhamento com terceiros.</p>
+          </div>
+        </div>
+      </div>
+      <div class="info-toggle-area">
+        <button class="btn-info-toggle" id="btn-mais-info" type="button" onclick="alternarMaisInformacoes()">MAIS INFORMAÇÕES &#709;</button>
+      </div>
     </div>
   </main>
 
@@ -378,6 +403,13 @@
       rodapeAtual = (rodapeAtual + 1) % rodapeSlides.length;
       rodapeSlides[rodapeAtual].classList.add("ativo");
     }, 3500);
+
+    function alternarMaisInformacoes() {
+      var caixa = document.getElementById("conteudo-mais-info");
+      var botao = document.getElementById("btn-mais-info");
+      var aberto = caixa.classList.toggle("aberto");
+      botao.innerHTML = aberto ? "MENOS INFORMAÇÕES &#708;" : "MAIS INFORMAÇÕES &#709;";
+    }
 
     var carrinho = [];
 
@@ -505,39 +537,6 @@
 
       var url = "https://wa.me/" + telefoneLoja + "?text=" + encodeURIComponent(mensagem);
       window.open(url, "_blank");
-    }
-
-    function abrirMaisInformacoes() {
-      var janela = window.open("", "_blank");
-      janela.document.write(
-        '<!DOCTYPE html>' +
-        '<html lang="pt-BR">' +
-        '<head>' +
-        '<meta charset="UTF-8">' +
-        '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
-        '<title>Mais Informações — NOTCH5 STUDIO CRIATIVO</title>' +
-        '<style>' +
-        'body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; color: #222; }' +
-        'header { background: #111; color: #fff; padding: 30px 20px; text-align: center; }' +
-        'main { max-width: 800px; margin: 28px auto; padding: 0 16px; }' +
-        '.bloco { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }' +
-        '.bloco h2 { margin: 0 0 10px; font-size: 20px; color: #111; }' +
-        '.bloco p { margin: 0; font-size: 15px; line-height: 1.6; color: #444; }' +
-        'footer { background: #222; color: #ccc; text-align: center; padding: 20px; margin-top: 30px; font-size: 14px; }' +
-        '</style>' +
-        '</head>' +
-        '<body>' +
-        '<header><h1>NOTCH5 STUDIO CRIATIVO</h1><p>SUBLIMAÇÃO - PERSONALIZAÇÃO - ELÉTRICA - TURISMO</p></header>' +
-        '<main>' +
-        '<div class="bloco"><h2>Quem Somos</h2><p>A NOTCH5 STUDIO CRIATIVO atua com sublimação, personalização, serviços de elétrica e turismo, oferecendo atendimento dedicado e soluções sob encomenda.</p></div>' +
-        '<div class="bloco"><h2>Entrega</h2><p>As entregas e retiradas são combinadas diretamente pelo WhatsApp após a confirmação do pedido, de acordo com o prazo de produção e a localização do cliente.</p></div>' +
-        '<div class="bloco"><h2>Política de Privacidade</h2><p>Os dados informados durante o atendimento pelo WhatsApp são utilizados exclusivamente para orçamento, produção, pagamento e entrega dos pedidos, sem compartilhamento com terceiros.</p></div>' +
-        '</main>' +
-        '<footer><p>NOTCH5 STUDIO CRIATIVO — Todos os direitos reservados</p></footer>' +
-        '</body>' +
-        '</html>'
-      );
-      janela.document.close();
     }
   </script>
 </body>
