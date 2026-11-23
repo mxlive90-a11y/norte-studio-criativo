@@ -8,6 +8,18 @@
     body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; color: #222; }
     header { background: #111; color: #fff; padding: 30px 20px; text-align: center; position: relative; }
     .btn-carrinho-topo { position: fixed; top: 16px; right: 16px; z-index: 900; background: #0a7; color: #fff; border: none; padding: 11px 16px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.25); }
+
+    /* Barra de CEP em destaque estilo Casas Bahia */
+    .barra-cep-topo { background: #0033c6; color: #fff; padding: 10px 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+    .barra-cep-interna { max-width: 960px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+    .cep-chamada { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+    .cep-chamada strong { font-size: 14px; }
+    .cep-form-topo { display: flex; align-items: center; gap: 6px; }
+    .cep-form-topo input { padding: 7px 11px; border: none; border-radius: 6px; font-size: 14px; width: 155px; outline: none; }
+    .cep-form-topo button { background: #e11d48; color: #fff; border: none; padding: 7px 14px; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; text-transform: uppercase; }
+    .cep-form-topo button:hover { background: #be123c; }
+    .cep-resultado-topo { font-size: 13px; color: #dbeafe; width: 100%; }
+
     main { max-width: 960px; margin: 28px auto; padding: 0 16px; }
     h2 { margin: 0 0 16px; }
 
@@ -103,6 +115,20 @@
     <h1>NOTCH5 STUDIO CRIATIVO</h1>
     <p>SUBLIMAÇÃO - PERSONALIZAÇÃO - ELÉTRICA - TURISMO</p>
   </header>
+
+  <div class="barra-cep-topo">
+    <div class="barra-cep-interna">
+      <div class="cep-chamada">
+        <span>&#128205;</span>
+        <span id="texto-cep-topo"><strong>Informe seu CEP</strong> para consultar prazo e entrega</span>
+      </div>
+      <div class="cep-form-topo">
+        <input type="text" id="cep-topo-input" maxlength="9" placeholder="00000-000" onkeydown="if(event.key==='Enter') consultarCepTopo()">
+        <button type="button" onclick="consultarCepTopo()">OK</button>
+      </div>
+      <div class="cep-resultado-topo" id="resultado-cep-topo" style="display:none;"></div>
+    </div>
+  </div>
 
   <main>
     <h2>Produtos em Destaque</h2>
@@ -429,6 +455,46 @@
       botao.textContent = aberto ? "Mostrar menos" : "Ler mais";
     }
 
+    function consultarCepTopo() {
+      var inputTopo = document.getElementById("cep-topo-input");
+      var cep = inputTopo.value.replace(/\D/g, "");
+      var textoTopo = document.getElementById("texto-cep-topo");
+      var resultadoTopo = document.getElementById("resultado-cep-topo");
+
+      if (cep.length !== 8) {
+        resultadoTopo.style.display = "block";
+        resultadoTopo.textContent = "Digite um CEP válido com 8 números (ex: 09900-000).";
+        return;
+      }
+
+      var cepFormatado = cep.slice(0, 5) + "-" + cep.slice(5);
+      inputTopo.value = cepFormatado;
+      resultadoTopo.style.display = "block";
+      resultadoTopo.textContent = "Consultando CEP " + cepFormatado + "...";
+
+      fetch("https://viacep.com.br/ws/" + cep + "/json/")
+        .then(function(r) { return r.json(); })
+        .then(function(dados) {
+          if (dados.erro) {
+            resultadoTopo.textContent = "CEP não encontrado. Confira os números digitados.";
+          } else {
+            var enderecoCompleto =
+              (dados.logradouro || "") + ", Nº  - " + (dados.bairro || "") + ", " + dados.localidade + "/" + dados.uf;
+            textoTopo.innerHTML = "Enviar para <strong>" + dados.localidade + "/" + dados.uf + "</strong> (" + cepFormatado + ")";
+            resultadoTopo.textContent = "Retirada Grátis no local ou Envio em 2 a 5 dias úteis (frete a confirmar no pedido).";
+
+            document.getElementById("cep-cliente").value = cepFormatado;
+            document.getElementById("endereco-cliente").value = enderecoCompleto;
+            document.getElementById("tipo-entrega").value = "Entrega / Envio";
+            document.getElementById("status-cep").textContent = "Prazo estimado: 2 a 5 dias úteis (frete a confirmar).";
+            atualizarResumo();
+          }
+        })
+        .catch(function() {
+          resultadoTopo.textContent = "Não foi possível consultar agora. Você pode informar no carrinho.";
+        });
+    }
+
     var carrinho = [];
 
     function formatarReal(valor) {
@@ -461,6 +527,7 @@
         status.textContent = "Informe um CEP válido com 8 números.";
         return;
       }
+      var cepFormatado = cep.slice(0, 5) + "-" + cep.slice(5);
       status.textContent = "Buscando endereço...";
       fetch("https://viacep.com.br/ws/" + cep + "/json/")
         .then(function(r) { return r.json(); })
@@ -472,6 +539,8 @@
               (dados.logradouro || "") + ", Nº  - " + (dados.bairro || "") + ", " + dados.localidade + "/" + dados.uf;
             document.getElementById("tipo-entrega").value = "Entrega / Envio";
             status.textContent = "Prazo estimado: 2 a 5 dias úteis (frete a confirmar).";
+            document.getElementById("cep-topo-input").value = cepFormatado;
+            document.getElementById("texto-cep-topo").innerHTML = "Enviar para <strong>" + dados.localidade + "/" + dados.uf + "</strong> (" + cepFormatado + ")";
             atualizarResumo();
           }
         })
