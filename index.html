@@ -53,14 +53,27 @@
       .slide-destaque-img { width: 105px; height: 105px; }
     }
 
-    .vitrine { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
-    .produto { background: #fff; border-radius: 10px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; }
-    .produto img { width: 100%; height: 160px; object-fit: cover; border-radius: 6px; margin-bottom: 12px; background: #e9e9e9; }
-    .produto h3 { margin: 0 0 8px; font-size: 18px; }
-    .produto p { margin: 0 0 14px; color: #555; font-size: 14px; }
-    .preco { font-size: 20px; font-weight: bold; color: #0a7; margin-bottom: 12px; }
-    .btn-comprar { width: 100%; background: #111; color: #fff; border: none; padding: 11px 14px; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; }
-    .btn-comprar:hover { background: #0a7; }
+    /* Vitrine com 10 produtos: apenas imagem, título e preço na grade */
+    .vitrine { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+    .produto { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.18s ease, box-shadow 0.18s ease; }
+    .produto:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.14); }
+    .produto-img-box { width: 100%; height: 165px; border-radius: 8px; background: #e9e9e9; overflow: hidden; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 13px; font-weight: bold; }
+    .produto-img-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .produto h3 { margin: 0 0 6px; font-size: 17px; }
+    .preco { font-size: 19px; font-weight: bold; color: #0a7; }
+
+    /* Modal de Detalhes do Produto ao clicar na foto */
+    .overlay-detalhe { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.68); z-index: 950; justify-content: center; align-items: center; padding: 16px; }
+    .overlay-detalhe.ativo { display: flex; }
+    .caixa-detalhe { background: #fff; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; border-radius: 12px; padding: 22px; box-sizing: border-box; box-shadow: 0 12px 32px rgba(0,0,0,0.35); }
+    .topo-detalhe { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px; margin-bottom: 14px; }
+    .topo-detalhe h3 { margin: 0; font-size: 19px; }
+    .detalhe-foto-box { width: 100%; height: 220px; border-radius: 8px; background: #f1f5f9; overflow: hidden; margin-bottom: 14px; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 14px; font-weight: bold; }
+    .detalhe-foto-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .detalhe-descricao { margin: 0 0 14px; font-size: 14px; line-height: 1.5; color: #444; }
+    .detalhe-preco { font-size: 22px; font-weight: bold; color: #0a7; margin-bottom: 14px; }
+    .btn-comprar-modal { width: 100%; background: #0a7; color: #fff; border: none; padding: 13px 16px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
+    .btn-comprar-modal:hover { background: #085; }
 
     /* Sanfona Mais / Menos Informações */
     .info-sanfona-box { margin-top: 32px; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
@@ -83,10 +96,10 @@
     .rodape-slide { display: none; margin: 0; }
     .rodape-slide.ativo { display: block; }
 
-    /* Carrinho e Checkout */
-    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: flex-end; }
+    /* Janela / Aba de Compra centralizada no meio da tela */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 1000; justify-content: center; align-items: center; padding: 16px; }
     .overlay.ativo { display: flex; }
-    .painel-carrinho { background: #fff; width: 100%; max-width: 440px; height: 100%; overflow-y: auto; padding: 22px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; }
+    .painel-carrinho { background: #fff; width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto; padding: 22px; border-radius: 12px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 12px 32px rgba(0,0,0,0.35); }
     .topo-carrinho { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding-bottom: 12px; margin-bottom: 14px; }
     .topo-carrinho h2 { margin: 0; font-size: 20px; }
     .btn-fechar { background: #eee; border: none; font-size: 18px; font-weight: bold; width: 34px; height: 34px; border-radius: 6px; cursor: pointer; }
@@ -201,136 +214,87 @@
       </div>
     </div>
 
+    <!-- 10 produtos: clique na foto/card abre o produto e o botão Comprar fica lá dentro -->
     <div class="vitrine" id="vitrine-produtos">
 
-      <div class="produto">
+      <div class="produto" onclick="abrirDetalheProduto('Adesivo em Vinil Sublimático', 15.00, '', 'Acabamento resistente para personalização e kits.')">
         <div>
+          <div class="produto-img-box"><span>Clique para ver</span></div>
           <h3>Adesivo em Vinil Sublimático</h3>
-          <p>Acabamento resistente para personalização e kits.</p>
         </div>
-        <div>
-          <div class="preco">R$ 15,00</div>
-          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Adesivo em Vinil Sublimático', 15.00)">Comprar</button>
-        </div>
+        <div class="preco">R$ 15,00</div>
       </div>
 
-      <div class="produto">
+      <div class="produto" onclick="abrirDetalheProduto('Cartela de Adesivos', 25.00, '', 'Arte personalizada pronta para aplicação e divulgação.')">
         <div>
+          <div class="produto-img-box"><span>Clique para ver</span></div>
           <h3>Cartela de Adesivos</h3>
-          <p>Arte personalizada pronta para aplicação e divulgação.</p>
         </div>
-        <div>
-          <div class="preco">R$ 25,00</div>
-          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Cartela de Adesivos', 25.00)">Comprar</button>
-        </div>
+        <div class="preco">R$ 25,00</div>
       </div>
 
-      <div class="produto">
+      <div class="produto" onclick="abrirDetalheProduto('Produto 3', 0.00, 'item-1.jpg', 'Descrição curta do produto 3.')">
         <div>
-          <img src="item-1.jpg" alt="Produto 3">
+          <div class="produto-img-box"><img src="item-1.jpg" alt="Produto 3" onerror="this.style.display='none'; this.parentNode.textContent='Sem foto'"></div>
           <h3>Produto 3</h3>
-          <p>Descrição curta do produto 3.</p>
         </div>
-        <div>
-          <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 3', 0.00)">Comprar</button>
-        </div>
+        <div class="preco">R$ 0,00</div>
       </div>
 
-      <div class="produto">
+      <div class="produto" onclick="abrirDetalheProduto('Produto 4', 0.00, 'item-2.jpg', 'Descrição curta do produto 4.')">
         <div>
-          <img src="item-2.jpg" alt="Produto 4">
+          <div class="produto-img-box"><img src="item-2.jpg" alt="Produto 4" onerror="this.style.display='none'; this.parentNode.textContent='Sem foto'"></div>
           <h3>Produto 4</h3>
-          <p>Descrição curta do produto 4.</p>
         </div>
-        <div>
-          <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 4', 0.00)">Comprar</button>
-        </div>
+        <div class="preco">R$ 0,00</div>
       </div>
 
-      <div class="produto">
+      <div class="produto" onclick="abrirDetalheProduto('Produto 5', 0.00, 'item-3.jpg', 'Descrição curta do produto 5.')">
         <div>
-          <img src="item-3.jpg" alt="Produto 5">
+          <div class="produto-img-box"><img src="item-3.jpg" alt="Produto 5" onerror="this.style.display='none'; this.parentNode.textContent='Sem foto'"></div>
           <h3>Produto 5</h3>
-          <p>Descrição curta do produto 5.</p>
         </div>
-        <div>
-          <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 5', 0.00)">Comprar</button>
-        </div>
+        <div class="preco">R$ 0,00</div>
       </div>
 
-      <div class="produto">
+      <div class="produto" onclick="abrirDetalheProduto('Produto 6', 0.00, 'item-4.jpg', 'Descrição curta do produto 6.')">
         <div>
-          <img src="item-4.jpg" alt="Produto 6">
+          <div class="produto-img-box"><img src="item-4.jpg" alt="Produto 6" onerror="this.style.display='none'; this.parentNode.textContent='Sem foto'"></div>
           <h3>Produto 6</h3>
-          <p>Descrição curta do produto 6.</p>
         </div>
-        <div>
-          <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 6', 0.00)">Comprar</button>
-        </div>
+        <div class="preco">R$ 0,00</div>
       </div>
 
-      <div class="produto">
+      <div class="produto" onclick="abrirDetalheProduto('Produto 7', 0.00, 'item-5.jpg', 'Descrição curta do produto 7.')">
         <div>
-          <img src="item-5.jpg" alt="Produto 7">
+          <div class="produto-img-box"><img src="item-5.jpg" alt="Produto 7" onerror="this.style.display='none'; this.parentNode.textContent='Sem foto'"></div>
           <h3>Produto 7</h3>
-          <p>Descrição curta do produto 7.</p>
         </div>
-        <div>
-          <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 7', 0.00)">Comprar</button>
-        </div>
+        <div class="preco">R$ 0,00</div>
       </div>
 
-      <div class="produto">
+      <div class="produto" onclick="abrirDetalheProduto('Produto 8', 0.00, 'item-6.jpg', 'Descrição curta do produto 8.')">
         <div>
-          <img src="item-6.jpg" alt="Produto 8">
+          <div class="produto-img-box"><img src="item-6.jpg" alt="Produto 8" onerror="this.style.display='none'; this.parentNode.textContent='Sem foto'"></div>
           <h3>Produto 8</h3>
-          <p>Descrição curta do produto 8.</p>
         </div>
-        <div>
-          <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 8', 0.00)">Comprar</button>
-        </div>
+        <div class="preco">R$ 0,00</div>
       </div>
 
-      <div class="produto">
+      <div class="produto" onclick="abrirDetalheProduto('Produto 9', 0.00, 'item-7.jpg', 'Descrição curta do produto 9.')">
         <div>
-          <img src="item-7.jpg" alt="Produto 9">
+          <div class="produto-img-box"><img src="item-7.jpg" alt="Produto 9" onerror="this.style.display='none'; this.parentNode.textContent='Sem foto'"></div>
           <h3>Produto 9</h3>
-          <p>Descrição curta do produto 9.</p>
         </div>
-        <div>
-          <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 9', 0.00)">Comprar</button>
-        </div>
+        <div class="preco">R$ 0,00</div>
       </div>
 
-      <div class="produto">
+      <div class="produto" onclick="abrirDetalheProduto('Produto 10', 0.00, 'item-8.jpg', 'Descrição curta do produto 10.')">
         <div>
-          <img src="item-8.jpg" alt="Produto 10">
+          <div class="produto-img-box"><img src="item-8.jpg" alt="Produto 10" onerror="this.style.display='none'; this.parentNode.textContent='Sem foto'"></div>
           <h3>Produto 10</h3>
-          <p>Descrição curta do produto 10.</p>
         </div>
-        <div>
-          <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 10', 0.00)">Comprar</button>
-        </div>
-      </div>
-
-      <div class="produto">
-        <div>
-          <img src="item-9.jpg" alt="Produto 11">
-          <h3>Produto 11</h3>
-          <p>Descrição curta do produto 11.</p>
-        </div>
-        <div>
-          <div class="preco">R$ 0,00</div>
-          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 11', 0.00)">Comprar</button>
-        </div>
+        <div class="preco">R$ 0,00</div>
       </div>
 
     </div>
@@ -376,12 +340,26 @@
     <p class="rodape-slide">Pedido direto no site e confirmação por e-mail</p>
   </footer>
 
-  <!-- Carrinho + Entrega + Dados do Cliente + Pagamento -->
+  <!-- Janela de visualização do produto (abre ao clicar na foto) com botão Comprar dentro -->
+  <div class="overlay-detalhe" id="overlay-detalhe">
+    <div class="caixa-detalhe">
+      <div class="topo-detalhe">
+        <h3 id="detalhe-titulo">Produto</h3>
+        <button class="btn-fechar" type="button" onclick="fecharDetalheProduto()">✕</button>
+      </div>
+      <div class="detalhe-foto-box" id="detalhe-foto-box"></div>
+      <p class="detalhe-descricao" id="detalhe-descricao"></p>
+      <div class="detalhe-preco" id="detalhe-preco">R$ 0,00</div>
+      <button class="btn-comprar-modal" id="btn-comprar-detalhe" type="button">Comprar</button>
+    </div>
+  </div>
+
+  <!-- Aba / Janela de Compra centralizada -->
   <div class="overlay" id="overlay-carrinho">
     <div class="painel-carrinho">
       <div>
         <div class="topo-carrinho">
-          <h2>Meu Carrinho</h2>
+          <h2 id="titulo-aba-compra">Comprar</h2>
           <button class="btn-fechar" type="button" onclick="fecharCarrinho()">✕</button>
         </div>
 
@@ -511,6 +489,33 @@
       botao.textContent = aberto ? "Mostrar menos" : "Leia mais";
     }
 
+    var produtoSelecionado = null;
+
+    function abrirDetalheProduto(nome, preco, imagem, descricao) {
+      produtoSelecionado = { nome: nome, preco: preco };
+      document.getElementById("detalhe-titulo").textContent = nome;
+      document.getElementById("detalhe-descricao").textContent = descricao;
+      document.getElementById("detalhe-preco").textContent = formatarReal(preco);
+
+      var fotoBox = document.getElementById("detalhe-foto-box");
+      if (imagem) {
+        fotoBox.innerHTML = '<img src="' + imagem + '" alt="' + nome + '" onerror="this.style.display=\'none\'; this.parentNode.textContent=\'Foto em breve\'">';
+      } else {
+        fotoBox.textContent = "Foto em breve";
+      }
+
+      document.getElementById("btn-comprar-detalhe").onclick = function() {
+        fecharDetalheProduto();
+        adicionarAoCarrinho(produtoSelecionado.nome, produtoSelecionado.preco);
+      };
+
+      document.getElementById("overlay-detalhe").classList.add("ativo");
+    }
+
+    function fecharDetalheProduto() {
+      document.getElementById("overlay-detalhe").classList.remove("ativo");
+    }
+
     var freteCalculado = 0;
     var prazoEstimadoTexto = "3 a 5 dias úteis (produção para personalizados)";
 
@@ -612,6 +617,7 @@
     }
 
     function adicionarAoCarrinho(nome, preco) {
+      document.getElementById("titulo-aba-compra").textContent = "Comprar — " + nome;
       document.getElementById("formulario-checkout").style.display = "block";
       document.getElementById("rodape-checkout").style.display = "block";
       document.getElementById("comprovante-pedido").classList.remove("ativo");
@@ -811,6 +817,7 @@
           botaoFinalizar.disabled = false;
           botaoFinalizar.textContent = "Finalizar Compra";
 
+          document.getElementById("titulo-aba-compra").textContent = "Resumo e Pagamento";
           document.getElementById("comprovante-texto").textContent = resumo;
           document.getElementById("formulario-checkout").style.display = "none";
           document.getElementById("rodape-checkout").style.display = "none";
@@ -847,6 +854,7 @@
     }
 
     function iniciarNovoPedido() {
+      document.getElementById("titulo-aba-compra").textContent = "Comprar";
       document.getElementById("detalhes-cliente").value = "";
       document.getElementById("comprovante-pedido").classList.remove("ativo");
       document.getElementById("formulario-checkout").style.display = "block";
