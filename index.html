@@ -106,6 +106,15 @@
     .resumo-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #0a7; margin-top: 8px; }
     .btn-finalizar { width: 100%; background: #0a7; color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 14px; }
     .btn-finalizar:hover { background: #085; }
+
+    /* Comprovante dentro do próprio site */
+    .comprovante-box { display: none; background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 14px; margin-top: 14px; }
+    .comprovante-box.ativo { display: block; }
+    .comprovante-box h3 { margin: 0 0 8px; color: #065f46; font-size: 16px; }
+    .comprovante-texto { white-space: pre-line; font-size: 13px; color: #1f2937; background: #fff; border: 1px solid #d1fae5; border-radius: 6px; padding: 10px; margin-bottom: 10px; }
+    .btn-copiar { width: 100%; background: #111; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 8px; }
+    .btn-copiar:hover { background: #0033c6; }
+    .btn-novo-pedido { width: 100%; background: #e5e7eb; color: #111; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -335,14 +344,14 @@
             <p>
               O frete e o prazo são calculados pelo CEP no site com envio para todo o Brasil,
               <span class="entrega-resto" id="entrega-resto">
-                somando o prazo de produção de 3 a 5 dias úteis para itens personalizados ao prazo da entrega/transporte. Você também pode escolher retirada no local (Grátis) e alinhar qualquer detalhe direto no WhatsApp.
+                somando o prazo de produção de 3 a 5 dias úteis para itens personalizados ao prazo da entrega/transporte. Você também pode escolher retirada no local (Grátis) e alinhar a confirmação depois pelo WhatsApp.
               </span>
             </p>
             <button class="btn-ler-mais-texto" id="btn-ler-mais-entrega" type="button" onclick="alternarLeituraEntrega()">Leia mais</button>
           </div>
           <div class="info-coluna">
             <h3>Política de Privacidade</h3>
-            <p>Os dados informados durante o atendimento pelo WhatsApp são utilizados exclusivamente para orçamento, produção, pagamento e entrega dos pedidos, sem compartilhamento com terceiros.</p>
+            <p>Os dados informados no pedido são utilizados exclusivamente para orçamento, produção, pagamento e entrega dos pedidos, sem compartilhamento com terceiros.</p>
           </div>
         </div>
       </div>
@@ -355,7 +364,7 @@
   <footer>
     <p class="rodape-slide ativo">NOTCH5 STUDIO CRIATIVO — Todos os direitos reservados</p>
     <p class="rodape-slide">SUBLIMAÇÃO • PERSONALIZAÇÃO • ELÉTRICA • TURISMO</p>
-    <p class="rodape-slide">Atendimento e pedidos diretos pelo WhatsApp</p>
+    <p class="rodape-slide">Pedido direto no site e confirmação de entrega por mensagem</p>
   </footer>
 
   <!-- Carrinho + Entrega + Dados do Cliente + Pagamento -->
@@ -367,40 +376,49 @@
           <button class="btn-fechar" type="button" onclick="fecharCarrinho()">✕</button>
         </div>
 
-        <div id="lista-itens-carrinho"></div>
+        <div id="formulario-checkout">
+          <div id="lista-itens-carrinho"></div>
 
-        <div class="bloco-checkout">
-          <h3>1. Entrega e Frete</h3>
-          <select class="campo" id="tipo-entrega" onchange="atualizarResumo()">
-            <option value="Retirada no local">Retirada no local (Grátis)</option>
-            <option value="Entrega / Envio">Entrega / Envio pelo CEP</option>
-          </select>
-          <div class="linha-cep">
-            <input class="campo" type="text" id="cep-cliente" maxlength="9" placeholder="Digite seu CEP (ex: 09900-000)">
-            <button class="btn-cep" type="button" onclick="consultarCep()">Calcular</button>
+          <div class="bloco-checkout">
+            <h3>1. Entrega e Frete</h3>
+            <select class="campo" id="tipo-entrega" onchange="atualizarResumo()">
+              <option value="Retirada no local">Retirada no local (Grátis)</option>
+              <option value="Entrega / Envio">Entrega / Envio pelo CEP</option>
+            </select>
+            <div class="linha-cep">
+              <input class="campo" type="text" id="cep-cliente" maxlength="9" placeholder="Digite seu CEP (ex: 09900-000)">
+              <button class="btn-cep" type="button" onclick="consultarCep()">Calcular</button>
+            </div>
+            <div id="status-cep" style="font-size:13px; color:#555; margin-bottom:6px;"></div>
+            <input class="campo" type="text" id="endereco-cliente" placeholder="Rua, número, bairro e cidade">
           </div>
-          <div id="status-cep" style="font-size:13px; color:#555; margin-bottom:6px;"></div>
-          <input class="campo" type="text" id="endereco-cliente" placeholder="Rua, número, bairro e cidade">
+
+          <div class="bloco-checkout">
+            <h3>2. Seus Dados</h3>
+            <input class="campo" type="text" id="nome-cliente" placeholder="Seu nome completo">
+            <input class="campo" type="tel" id="whats-cliente" placeholder="Seu WhatsApp com DDD">
+          </div>
+
+          <div class="bloco-checkout">
+            <h3>3. Forma de Pagamento</h3>
+            <select class="campo" id="forma-pagamento">
+              <option value="Pix">Pix</option>
+              <option value="Cartão de Crédito">Cartão de Crédito</option>
+              <option value="Cartão de Débito">Cartão de Débito</option>
+              <option value="Dinheiro">Dinheiro</option>
+            </select>
+          </div>
         </div>
 
-        <div class="bloco-checkout">
-          <h3>2. Seus Dados</h3>
-          <input class="campo" type="text" id="nome-cliente" placeholder="Seu nome completo">
-          <input class="campo" type="tel" id="whats-cliente" placeholder="Seu WhatsApp com DDD">
-        </div>
-
-        <div class="bloco-checkout">
-          <h3>3. Forma de Pagamento</h3>
-          <select class="campo" id="forma-pagamento">
-            <option value="Pix">Pix</option>
-            <option value="Cartão de Crédito">Cartão de Crédito</option>
-            <option value="Cartão de Débito">Cartão de Débito</option>
-            <option value="Dinheiro">Dinheiro</option>
-          </select>
+        <div class="comprovante-box" id="comprovante-pedido">
+          <h3>Pedido Registrado no Site</h3>
+          <div class="comprovante-texto" id="comprovante-texto"></div>
+          <button class="btn-copiar" type="button" onclick="copiarComprovante()">Copiar Resumo do Pedido</button>
+          <button class="btn-novo-pedido" type="button" onclick="iniciarNovoPedido()">Fazer Novo Pedido</button>
         </div>
       </div>
 
-      <div>
+      <div id="rodape-checkout">
         <div class="resumo-valores">
           <div class="resumo-linha"><span>Subtotal:</span><span id="valor-subtotal">R$ 0,00</span></div>
           <div class="resumo-linha"><span>Entrega:</span><span id="valor-frete">Grátis</span></div>
@@ -569,6 +587,10 @@
     }
 
     function adicionarAoCarrinho(nome, preco) {
+      document.getElementById("formulario-checkout").style.display = "block";
+      document.getElementById("rodape-checkout").style.display = "block";
+      document.getElementById("comprovante-pedido").classList.remove("ativo");
+
       var existente = carrinho.find(function(item) { return item.nome === nome; });
       if (existente) {
         existente.qtd += 1;
@@ -677,7 +699,7 @@
         return;
       }
 
-      var telefoneLoja = "5511999999999";
+      var numeroPedido = "N5-" + String(Date.now()).slice(-5);
       var linhasProdutos = carrinho.map(function(item) {
         return "- " + item.qtd + "x " + item.nome + " (" + formatarReal(item.preco * item.qtd) + ")";
       }).join("\n");
@@ -686,8 +708,9 @@
       var freteAtual = entrega === "Retirada no local" ? 0 : freteCalculado;
       var total = subtotal + freteAtual;
 
-      var mensagem =
-        "Novo Pedido — NOTCH5 STUDIO CRIATIVO\n\n" +
+      var resumo =
+        "Pedido: " + numeroPedido + "\n" +
+        "Cliente: " + nome + (whatsCliente ? " | WhatsApp: " + whatsCliente : "") + "\n\n" +
         "Itens:\n" + linhasProdutos + "\n\n" +
         "Subtotal: " + formatarReal(subtotal) + "\n" +
         "Entrega (" + entrega + "): " + (entrega === "Retirada no local" ? "Grátis" : formatarReal(freteAtual)) + "\n" +
@@ -695,11 +718,45 @@
         "Prazo estimado: " + prazoEstimadoTexto + "\n" +
         (cep ? "CEP: " + cep + "\n" : "") +
         (endereco ? "Endereço: " + endereco + "\n" : "") +
-        "Pagamento: " + pagamento + "\n" +
-        "Cliente: " + nome + (whatsCliente ? " (" + whatsCliente + ")" : "");
+        "Pagamento: " + pagamento;
 
-      var url = "https://wa.me/" + telefoneLoja + "?text=" + encodeURIComponent(mensagem);
-      window.open(url, "_blank");
+      try {
+        var historico = JSON.parse(localStorage.getItem("notch5_pedidos") || "[]");
+        historico.unshift({
+          numero: numeroPedido,
+          data: new Date().toLocaleString("pt-BR"),
+          resumo: resumo
+        });
+        localStorage.setItem("notch5_pedidos", JSON.stringify(historico));
+      } catch (e) {}
+
+      document.getElementById("comprovante-texto").textContent = resumo;
+      document.getElementById("formulario-checkout").style.display = "none";
+      document.getElementById("rodape-checkout").style.display = "none";
+      document.getElementById("comprovante-pedido").classList.add("ativo");
+
+      carrinho = [];
+      atualizarResumo();
+    }
+
+    function copiarComprovante() {
+      var texto = document.getElementById("comprovante-texto").textContent;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).then(function() {
+          alert("Resumo do pedido copiado!");
+        }).catch(function() {
+          alert("Selecione o texto do resumo e copie manualmente.");
+        });
+      } else {
+        alert("Selecione o texto do resumo e copie manualmente.");
+      }
+    }
+
+    function iniciarNovoPedido() {
+      document.getElementById("comprovante-pedido").classList.remove("ativo");
+      document.getElementById("formulario-checkout").style.display = "block";
+      document.getElementById("rodape-checkout").style.display = "block";
+      atualizarResumo();
     }
   </script>
 </body>
