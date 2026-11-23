@@ -70,10 +70,8 @@
     .info-coluna h3 { margin: 0 0 8px; font-size: 16px; color: #0033c6; text-transform: uppercase; }
     .info-coluna p { margin: 0 0 10px; font-size: 14px; line-height: 1.6; color: #444; }
     .info-coluna p:last-child { margin-bottom: 0; }
-    .texto-expansivel-resto { display: none; }
-    .texto-expansivel-resto.aberto { display: inline; }
-    .texto-expansivel-bloco { display: none; margin-top: 8px; }
-    .texto-expansivel-bloco.aberto { display: block; }
+    .quem-somos-resto { display: none; }
+    .quem-somos-resto.aberto { display: inline; }
     .btn-ler-mais-texto { background: #111; color: #fff; border: none; border-radius: 6px; font-weight: bold; font-size: 13px; padding: 7px 14px; margin-top: 8px; cursor: pointer; display: inline-block; }
     .btn-ler-mais-texto:hover { background: #0033c6; }
     .info-toggle-area { text-align: center; padding: 14px; background: #fff; }
@@ -122,7 +120,7 @@
     <div class="barra-cep-interna">
       <div class="cep-chamada">
         <span>&#128205;</span>
-        <span id="texto-cep-topo"><strong>Envio para todo o Brasil!</strong> Informe seu CEP para consultar entrega</span>
+        <span id="texto-cep-topo"><strong>Informe seu CEP</strong> para consultar prazo e entrega</span>
       </div>
       <div class="cep-form-topo">
         <input type="text" id="cep-topo-input" maxlength="9" placeholder="00000-000" onkeydown="if(event.key==='Enter') consultarCepTopo()">
@@ -326,24 +324,15 @@
             <h3>Quem Somos</h3>
             <p>
               A <strong>NOTCH5 STUDIO CRIATIVO</strong> nasceu da vontade de transformar trabalho duro, dedicação e criatividade em algo que marque as pessoas de verdade. Mais do que prestar serviços, cada entrega carrega o compromisso de quem faz acontecer com as próprias mãos
-              <span class="texto-expansivel-resto" id="quem-somos-resto">
+              <span class="quem-somos-resto" id="quem-somos-resto">
                 — seja dando cor e identidade com <strong>sublimação</strong> e personalização, levando energia firme e segura com <strong>elétrica</strong>, <strong>geradores</strong> e <strong>eventos</strong>, ou ajudando alguém a realizar uma viagem e um momento especial. Por trás de cada detalhe existe um sonho maior: construir e consolidar um estúdio próprio para a <strong>NOTCH5</strong>, um espaço criativo e de estrutura onde todas essas frentes caminham juntas, crescendo passo a passo, com respeito a quem confia no nosso trabalho e orgulho de cada conquista alcançada ao longo do caminho.
               </span>
             </p>
             <button class="btn-ler-mais-texto" id="btn-ler-mais-texto" type="button" onclick="alternarLeituraQuemSomos()">Ler mais</button>
           </div>
           <div class="info-coluna">
-            <h3>Envios e Entregas</h3>
-            <p>
-              <strong>Enviamos para todo o Brasil!</strong> Escolha entre retirada grátis, entrega rápida na região ou envio pelos Correios e transportadoras.
-            </p>
-            <div class="texto-expansivel-bloco" id="entrega-resto">
-              <p>• <strong>Retirada no local (Grátis):</strong> combine o horário de retirada diretamente pelo WhatsApp.</p>
-              <p>• <strong>Entrega Rápida na região:</strong> envio ágil via motoboy ou carro de aplicativo para pedidos urgentes na Grande SP.</p>
-              <p>• <strong>Correios e Transportadoras:</strong> despachamos para qualquer estado do Brasil via PAC, SEDEX ou transportadora com código de rastreio.</p>
-              <p><strong>Prazos:</strong> o prazo total soma o tempo de produção (<strong>3 a 5 dias úteis</strong> para personalizados após aprovação da arte) + o prazo do transporte escolhido.</p>
-            </div>
-            <button class="btn-ler-mais-texto" id="btn-ler-mais-entrega" type="button" onclick="alternarLeituraEntrega()">Ler mais</button>
+            <h3>Entrega</h3>
+            <p>As entregas e retiradas são combinadas diretamente pelo WhatsApp após a confirmação do pedido, de acordo com o prazo de produção (3 a 5 dias úteis para personalizados) e a localização do cliente.</p>
           </div>
           <div class="info-coluna">
             <h3>Política de Privacidade</h3>
@@ -359,7 +348,6 @@
 
   <footer>
     <p class="rodape-slide ativo">NOTCH5 STUDIO CRIATIVO — Todos os direitos reservados</p>
-    <p class="rodape-slide">ENVIAMOS PARA TODO O BRASIL • CORREIOS E TRANSPORTADORAS</p>
     <p class="rodape-slide">SUBLIMAÇÃO • PERSONALIZAÇÃO • ELÉTRICA • TURISMO</p>
     <p class="rodape-slide">Atendimento e pedidos diretos pelo WhatsApp</p>
   </footer>
@@ -376,18 +364,17 @@
         <div id="lista-itens-carrinho"></div>
 
         <div class="bloco-checkout">
-          <h3>1. Entrega e Frete (Todo o Brasil)</h3>
+          <h3>1. Entrega e Frete</h3>
           <select class="campo" id="tipo-entrega" onchange="atualizarResumo()">
             <option value="Retirada no local">Retirada no local (Grátis)</option>
-            <option value="Entrega Rápida (Motoboy / App na região)">Entrega Rápida (Motoboy / App na região)</option>
-            <option value="Correios ou Transportadora (Todo o Brasil)">Correios ou Transportadora (Todo o Brasil)</option>
+            <option value="Entrega / Envio">Entrega / Envio (A combinar no CEP)</option>
           </select>
           <div class="linha-cep">
             <input class="campo" type="text" id="cep-cliente" placeholder="Digite seu CEP (ex: 09900-000)">
             <button class="btn-cep" type="button" onclick="consultarCep()">Calcular</button>
           </div>
           <div id="status-cep" style="font-size:13px; color:#555; margin-bottom:6px;"></div>
-          <input class="campo" type="text" id="endereco-cliente" placeholder="Rua, número, bairro, cidade e estado">
+          <input class="campo" type="text" id="endereco-cliente" placeholder="Rua, número, bairro e cidade">
         </div>
 
         <div class="bloco-checkout">
@@ -468,20 +455,6 @@
       botao.textContent = aberto ? "Mostrar menos" : "Ler mais";
     }
 
-    function alternarLeituraEntrega() {
-      var resto = document.getElementById("entrega-resto");
-      var botao = document.getElementById("btn-ler-mais-entrega");
-      var aberto = resto.classList.toggle("aberto");
-      botao.textContent = aberto ? "Mostrar menos" : "Ler mais";
-    }
-
-    function definirPrazoPorEstado(uf) {
-      if (uf === "SP") {
-        return "Retirada Grátis no local, Entrega Rápida (Motoboy/App) ou Correios/Transportadora (produção 3 a 5 dias úteis + transporte).";
-      }
-      return "Envio para " + uf + " via Correios (PAC/SEDEX) ou Transportadora com rastreio (produção 3 a 5 dias úteis + transporte).";
-    }
-
     function consultarCepTopo() {
       var inputTopo = document.getElementById("cep-topo-input");
       var cep = inputTopo.value.replace(/\D/g, "");
@@ -507,14 +480,13 @@
           } else {
             var enderecoCompleto =
               (dados.logradouro || "") + ", Nº  - " + (dados.bairro || "") + ", " + dados.localidade + "/" + dados.uf;
-            var msgPrazo = definirPrazoPorEstado(dados.uf);
             textoTopo.innerHTML = "Enviar para <strong>" + dados.localidade + "/" + dados.uf + "</strong> (" + cepFormatado + ")";
-            resultadoTopo.textContent = msgPrazo;
+            resultadoTopo.textContent = "Retirada Grátis no local ou Envio (produção de 3 a 5 dias úteis para personalizados + transporte).";
 
             document.getElementById("cep-cliente").value = cepFormatado;
             document.getElementById("endereco-cliente").value = enderecoCompleto;
-            document.getElementById("tipo-entrega").value = "Correios ou Transportadora (Todo o Brasil)";
-            document.getElementById("status-cep").textContent = msgPrazo;
+            document.getElementById("tipo-entrega").value = "Entrega / Envio";
+            document.getElementById("status-cep").textContent = "Prazo de produção: 3 a 5 dias úteis para personalizados (frete a confirmar).";
             atualizarResumo();
           }
         })
@@ -563,11 +535,10 @@
           if (dados.erro) {
             status.textContent = "CEP não encontrado.";
           } else {
-            var msgPrazo = definirPrazoPorEstado(dados.uf);
             document.getElementById("endereco-cliente").value =
               (dados.logradouro || "") + ", Nº  - " + (dados.bairro || "") + ", " + dados.localidade + "/" + dados.uf;
-            document.getElementById("tipo-entrega").value = "Correios ou Transportadora (Todo o Brasil)";
-            status.textContent = msgPrazo;
+            document.getElementById("tipo-entrega").value = "Entrega / Envio";
+            status.textContent = "Prazo de produção: 3 a 5 dias úteis para personalizados (frete a confirmar).";
             document.getElementById("cep-topo-input").value = cepFormatado;
             document.getElementById("texto-cep-topo").innerHTML = "Enviar para <strong>" + dados.localidade + "/" + dados.uf + "</strong> (" + cepFormatado + ")";
             atualizarResumo();
@@ -647,7 +618,7 @@
         "Novo Pedido — NOTCH5 STUDIO CRIATIVO\n\n" +
         "Itens:\n" + linhasProdutos + "\n\n" +
         "Total: " + formatarReal(total) + "\n" +
-        "Modalidade de Entrega: " + entrega + (cep ? " | CEP: " + cep : "") + (endereco ? "\nEndereço: " + endereco : "") + "\n" +
+        "Entrega: " + entrega + (cep ? " | CEP: " + cep : "") + (endereco ? "\nEndereço: " + endereco : "") + "\n" +
         "Pagamento: " + pagamento + "\n" +
         "Cliente: " + nome + (whatsCliente ? " (" + whatsCliente + ")" : "");
 
