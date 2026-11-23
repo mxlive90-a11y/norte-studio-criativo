@@ -7,7 +7,6 @@
   <style>
     body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; color: #222; }
     header { background: #111; color: #fff; padding: 30px 20px; text-align: center; position: relative; }
-    .marca-header-esq { position: fixed; top: 16px; left: 16px; z-index: 900; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 9px 14px; border-radius: 8px; font-weight: bold; font-size: 13px; letter-spacing: 0.4px; }
     .btn-carrinho-topo { position: fixed; top: 16px; right: 16px; z-index: 900; background: #0a7; color: #fff; border: none; padding: 11px 16px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.25); }
 
     /* Barra de CEP em destaque estilo Casas Bahia */
@@ -48,7 +47,6 @@
     .ponto.ativo { width: 13px; height: 13px; background: #0033c6; }
 
     @media (max-width: 600px) {
-      .marca-header-esq { display: none; }
       .slide { height: 200px; padding: 18px 20px; }
       .slide-conteudo { max-width: 65%; }
       .slide-conteudo h3 { font-size: 20px; }
@@ -72,8 +70,10 @@
     .info-coluna h3 { margin: 0 0 8px; font-size: 16px; color: #0033c6; text-transform: uppercase; }
     .info-coluna p { margin: 0 0 10px; font-size: 14px; line-height: 1.6; color: #444; }
     .info-coluna p:last-child { margin-bottom: 0; }
-    .quem-somos-resto { display: none; }
-    .quem-somos-resto.aberto { display: inline; }
+    .texto-expansivel-resto { display: none; }
+    .texto-expansivel-resto.aberto { display: inline; }
+    .texto-expansivel-bloco { display: none; margin-top: 8px; }
+    .texto-expansivel-bloco.aberto { display: block; }
     .btn-ler-mais-texto { background: #111; color: #fff; border: none; border-radius: 6px; font-weight: bold; font-size: 13px; padding: 7px 14px; margin-top: 8px; cursor: pointer; display: inline-block; }
     .btn-ler-mais-texto:hover { background: #0033c6; }
     .info-toggle-area { text-align: center; padding: 14px; background: #fff; }
@@ -111,7 +111,6 @@
   </style>
 </head>
 <body>
-  <div class="marca-header-esq">NOTCH5 + PROCABOS ELÉTRICOS</div>
   <button class="btn-carrinho-topo" type="button" onclick="abrirCarrinho()">Carrinho (<span id="contador-carrinho">0</span>)</button>
 
   <header>
@@ -327,7 +326,7 @@
             <h3>Quem Somos</h3>
             <p>
               A <strong>NOTCH5 STUDIO CRIATIVO</strong> nasceu da vontade de transformar trabalho duro, dedicação e criatividade em algo que marque as pessoas de verdade. Mais do que prestar serviços, cada entrega carrega o compromisso de quem faz acontecer com as próprias mãos
-              <span class="quem-somos-resto" id="quem-somos-resto">
+              <span class="texto-expansivel-resto" id="quem-somos-resto">
                 — seja dando cor e identidade com <strong>sublimação</strong> e personalização, levando energia firme e segura com <strong>elétrica</strong>, <strong>geradores</strong> e <strong>eventos</strong>, ou ajudando alguém a realizar uma viagem e um momento especial. Por trás de cada detalhe existe um sonho maior: construir e consolidar um estúdio próprio para a <strong>NOTCH5</strong>, um espaço criativo e de estrutura onde todas essas frentes caminham juntas, crescendo passo a passo, com respeito a quem confia no nosso trabalho e orgulho de cada conquista alcançada ao longo do caminho.
               </span>
             </p>
@@ -335,11 +334,16 @@
           </div>
           <div class="info-coluna">
             <h3>Envios e Entregas</h3>
-            <p><strong>Enviamos para todo o Brasil!</strong> Escolha a melhor opção para você:</p>
-            <p>• <strong>Retirada no local (Grátis):</strong> combine o horário de retirada diretamente pelo WhatsApp.</p>
-            <p>• <strong>Entrega Rápida na região:</strong> envio ágil via motoboy ou carro de aplicativo para pedidos urgentes na Grande SP.</p>
-            <p>• <strong>Correios e Transportadoras:</strong> despachamos para qualquer estado do Brasil via PAC, SEDEX ou transportadora com código de rastreio.</p>
-            <p><strong>Prazos:</strong> o prazo total soma o tempo de produção (2 a 3 dias úteis para personalizados após aprovação da arte) + o prazo do transporte escolhido.</p>
+            <p>
+              <strong>Enviamos para todo o Brasil!</strong> Escolha entre retirada grátis, entrega rápida na região ou envio pelos Correios e transportadoras.
+            </p>
+            <div class="texto-expansivel-bloco" id="entrega-resto">
+              <p>• <strong>Retirada no local (Grátis):</strong> combine o horário de retirada diretamente pelo WhatsApp.</p>
+              <p>• <strong>Entrega Rápida na região:</strong> envio ágil via motoboy ou carro de aplicativo para pedidos urgentes na Grande SP.</p>
+              <p>• <strong>Correios e Transportadoras:</strong> despachamos para qualquer estado do Brasil via PAC, SEDEX ou transportadora com código de rastreio.</p>
+              <p><strong>Prazos:</strong> o prazo total soma o tempo de produção (<strong>3 a 5 dias úteis</strong> para personalizados após aprovação da arte) + o prazo do transporte escolhido.</p>
+            </div>
+            <button class="btn-ler-mais-texto" id="btn-ler-mais-entrega" type="button" onclick="alternarLeituraEntrega()">Ler mais</button>
           </div>
           <div class="info-coluna">
             <h3>Política de Privacidade</h3>
@@ -464,11 +468,18 @@
       botao.textContent = aberto ? "Mostrar menos" : "Ler mais";
     }
 
+    function alternarLeituraEntrega() {
+      var resto = document.getElementById("entrega-resto");
+      var botao = document.getElementById("btn-ler-mais-entrega");
+      var aberto = resto.classList.toggle("aberto");
+      botao.textContent = aberto ? "Mostrar menos" : "Ler mais";
+    }
+
     function definirPrazoPorEstado(uf) {
       if (uf === "SP") {
-        return "Retirada Grátis no local, Entrega Rápida (Motoboy/App) ou Correios/Transportadora (1 a 4 dias úteis + produção).";
+        return "Retirada Grátis no local, Entrega Rápida (Motoboy/App) ou Correios/Transportadora (produção 3 a 5 dias úteis + transporte).";
       }
-      return "Envio para " + uf + " via Correios (PAC/SEDEX) ou Transportadora com rastreio (prazo de produção + transporte a confirmar no WhatsApp).";
+      return "Envio para " + uf + " via Correios (PAC/SEDEX) ou Transportadora com rastreio (produção 3 a 5 dias úteis + transporte).";
     }
 
     function consultarCepTopo() {
