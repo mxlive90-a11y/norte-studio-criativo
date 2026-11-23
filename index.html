@@ -9,7 +9,7 @@
     header { background: #111; color: #fff; padding: 30px 20px; text-align: center; position: relative; }
     .btn-carrinho-topo { position: fixed; top: 16px; right: 16px; z-index: 900; background: #0a7; color: #fff; border: none; padding: 11px 16px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.25); }
 
-    /* Barra de CEP em destaque estilo Casas Bahia */
+    /* Barra de CEP em destaque */
     .barra-cep-topo { background: #0033c6; color: #fff; padding: 10px 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
     .barra-cep-interna { max-width: 960px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
     .cep-chamada { display: flex; align-items: center; gap: 8px; font-size: 14px; }
@@ -23,7 +23,7 @@
     main { max-width: 960px; margin: 28px auto; padding: 0 16px; }
     h2 { margin: 0 0 16px; }
 
-    /* Slider estilo Casas Bahia */
+    /* Slider */
     .slider-wrapper { margin-bottom: 28px; }
     .slider-viewport { position: relative; width: 100%; overflow: hidden; border-radius: 12px; }
     .slider-trilho { display: flex; width: 100%; transition: transform 0.45s ease; }
@@ -62,7 +62,7 @@
     .btn-comprar { width: 100%; background: #111; color: #fff; border: none; padding: 11px 14px; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; }
     .btn-comprar:hover { background: #0a7; }
 
-    /* Sanfona Mais / Menos Informações estilo Casas Bahia */
+    /* Sanfona Mais / Menos Informações */
     .info-sanfona-box { margin-top: 32px; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
     .info-conteudo-expansivel { display: none; padding: 22px 20px 14px; border-bottom: 1px solid #e5e7eb; }
     .info-conteudo-expansivel.aberto { display: block; }
@@ -83,7 +83,7 @@
     .rodape-slide { display: none; margin: 0; }
     .rodape-slide.ativo { display: block; }
 
-    /* Carrinho e Checkout estilo loja */
+    /* Carrinho e Checkout */
     .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: flex-end; }
     .overlay.ativo { display: flex; }
     .painel-carrinho { background: #fff; width: 100%; max-width: 440px; height: 100%; overflow-y: auto; padding: 22px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; }
@@ -333,9 +333,9 @@
           <div class="info-coluna">
             <h3>Entrega</h3>
             <p>
-              As entregas e retiradas são combinadas diretamente pelo WhatsApp após a confirmação do pedido,
+              O frete e o prazo são calculados pelo CEP no site com envio para todo o Brasil,
               <span class="entrega-resto" id="entrega-resto">
-                de acordo com o prazo de produção (3 a 5 dias úteis para personalizados), a modalidade escolhida (retirada grátis, entrega rápida na região ou Correios/transportadora para todo o Brasil) e a localização do cliente.
+                somando o prazo de produção de 3 a 5 dias úteis para itens personalizados ao prazo da entrega/transporte. Você também pode escolher retirada no local (Grátis) e alinhar qualquer detalhe direto no WhatsApp.
               </span>
             </p>
             <button class="btn-ler-mais-texto" id="btn-ler-mais-entrega" type="button" onclick="alternarLeituraEntrega()">Leia mais</button>
@@ -373,10 +373,10 @@
           <h3>1. Entrega e Frete</h3>
           <select class="campo" id="tipo-entrega" onchange="atualizarResumo()">
             <option value="Retirada no local">Retirada no local (Grátis)</option>
-            <option value="Entrega / Envio">Entrega / Envio (A combinar no CEP)</option>
+            <option value="Entrega / Envio">Entrega / Envio pelo CEP</option>
           </select>
           <div class="linha-cep">
-            <input class="campo" type="text" id="cep-cliente" placeholder="Digite seu CEP (ex: 09900-000)">
+            <input class="campo" type="text" id="cep-cliente" maxlength="9" placeholder="Digite seu CEP (ex: 09900-000)">
             <button class="btn-cep" type="button" onclick="consultarCep()">Calcular</button>
           </div>
           <div id="status-cep" style="font-size:13px; color:#555; margin-bottom:6px;"></div>
@@ -468,10 +468,74 @@
       botao.textContent = aberto ? "Mostrar menos" : "Leia mais";
     }
 
+    var freteCalculado = 0;
+    var prazoEstimadoTexto = "3 a 5 dias úteis (produção para personalizados)";
+
+    function calcularFreteEPrazoPorCep(cepLimpo, uf, localidade) {
+      var prefixo = parseInt(cepLimpo.slice(0, 5), 10);
+      var cidadeNorm = (localidade || "").toLowerCase();
+
+      if (prefixo >= 9900 && prefixo <= 9999 && cidadeNorm.indexOf("diadema") !== -1) {
+        return {
+          valor: 12.00,
+          prazo: "3 a 5 dias úteis (produção) + até 1 dia útil de entrega"
+        };
+      }
+
+      if (prefixo >= 1000 && prefixo <= 9999) {
+        return {
+          valor: 18.00,
+          prazo: "3 a 5 dias úteis (produção) + 1 a 2 dias úteis de entrega"
+        };
+      }
+
+      if (uf === "SP" || (prefixo >= 11000 && prefixo <= 19999)) {
+        return {
+          valor: 24.00,
+          prazo: "3 a 5 dias úteis (produção) + 2 a 4 dias úteis de envio"
+        };
+      }
+
+      if (["RJ", "MG", "ES", "PR", "SC", "RS"].indexOf(uf) !== -1) {
+        return {
+          valor: 32.00,
+          prazo: "3 a 5 dias úteis (produção) + 3 a 6 dias úteis de envio"
+        };
+      }
+
+      return {
+        valor: 42.00,
+        prazo: "3 a 5 dias úteis (produção) + 4 a 8 dias úteis de envio"
+      };
+    }
+
+    function aplicarDadosCep(cepFormatado, dados) {
+      var calculo = calcularFreteEPrazoPorCep(cepFormatado.replace(/\D/g, ""), dados.uf, dados.localidade);
+      freteCalculado = calculo.valor;
+      prazoEstimadoTexto = calculo.prazo;
+
+      var enderecoCompleto =
+        (dados.logradouro || "") + ", Nº  - " + (dados.bairro || "") + ", " + dados.localidade + "/" + dados.uf;
+
+      document.getElementById("cep-topo-input").value = cepFormatado;
+      document.getElementById("texto-cep-topo").innerHTML =
+        "Enviar para <strong>" + dados.localidade + "/" + dados.uf + "</strong> (" + cepFormatado + ") — Frete: <strong>" + formatarReal(freteCalculado) + "</strong>";
+
+      var resultadoTopo = document.getElementById("resultado-cep-topo");
+      resultadoTopo.style.display = "block";
+      resultadoTopo.textContent = "Prazo estimado: " + prazoEstimadoTexto + ".";
+
+      document.getElementById("cep-cliente").value = cepFormatado;
+      document.getElementById("endereco-cliente").value = enderecoCompleto;
+      document.getElementById("tipo-entrega").value = "Entrega / Envio";
+      document.getElementById("status-cep").textContent =
+        "Frete: " + formatarReal(freteCalculado) + " | Prazo: " + prazoEstimadoTexto + ".";
+      atualizarResumo();
+    }
+
     function consultarCepTopo() {
       var inputTopo = document.getElementById("cep-topo-input");
       var cep = inputTopo.value.replace(/\D/g, "");
-      var textoTopo = document.getElementById("texto-cep-topo");
       var resultadoTopo = document.getElementById("resultado-cep-topo");
 
       if (cep.length !== 8) {
@@ -481,9 +545,8 @@
       }
 
       var cepFormatado = cep.slice(0, 5) + "-" + cep.slice(5);
-      inputTopo.value = cepFormatado;
       resultadoTopo.style.display = "block";
-      resultadoTopo.textContent = "Consultando CEP " + cepFormatado + "...";
+      resultadoTopo.textContent = "Calculando frete e prazo para " + cepFormatado + "...";
 
       fetch("https://viacep.com.br/ws/" + cep + "/json/")
         .then(function(r) { return r.json(); })
@@ -491,16 +554,7 @@
           if (dados.erro) {
             resultadoTopo.textContent = "CEP não encontrado. Confira os números digitados.";
           } else {
-            var enderecoCompleto =
-              (dados.logradouro || "") + ", Nº  - " + (dados.bairro || "") + ", " + dados.localidade + "/" + dados.uf;
-            textoTopo.innerHTML = "Enviar para <strong>" + dados.localidade + "/" + dados.uf + "</strong> (" + cepFormatado + ")";
-            resultadoTopo.textContent = "Retirada Grátis no local ou Envio (produção de 3 a 5 dias úteis para personalizados + transporte).";
-
-            document.getElementById("cep-cliente").value = cepFormatado;
-            document.getElementById("endereco-cliente").value = enderecoCompleto;
-            document.getElementById("tipo-entrega").value = "Entrega / Envio";
-            document.getElementById("status-cep").textContent = "Prazo de produção: 3 a 5 dias úteis para personalizados (frete a confirmar).";
-            atualizarResumo();
+            aplicarDadosCep(cepFormatado, dados);
           }
         })
         .catch(function() {
@@ -541,20 +595,14 @@
         return;
       }
       var cepFormatado = cep.slice(0, 5) + "-" + cep.slice(5);
-      status.textContent = "Buscando endereço...";
+      status.textContent = "Calculando frete e prazo...";
       fetch("https://viacep.com.br/ws/" + cep + "/json/")
         .then(function(r) { return r.json(); })
         .then(function(dados) {
           if (dados.erro) {
             status.textContent = "CEP não encontrado.";
           } else {
-            document.getElementById("endereco-cliente").value =
-              (dados.logradouro || "") + ", Nº  - " + (dados.bairro || "") + ", " + dados.localidade + "/" + dados.uf;
-            document.getElementById("tipo-entrega").value = "Entrega / Envio";
-            status.textContent = "Prazo de produção: 3 a 5 dias úteis para personalizados (frete a confirmar).";
-            document.getElementById("cep-topo-input").value = cepFormatado;
-            document.getElementById("texto-cep-topo").innerHTML = "Enviar para <strong>" + dados.localidade + "/" + dados.uf + "</strong> (" + cepFormatado + ")";
-            atualizarResumo();
+            aplicarDadosCep(cepFormatado, dados);
           }
         })
         .catch(function() {
@@ -589,10 +637,19 @@
       }
 
       var tipoEntrega = document.getElementById("tipo-entrega").value;
-      document.getElementById("valor-frete").textContent = tipoEntrega === "Retirada no local" ? "Grátis" : "A combinar";
+      var freteAtual = 0;
+
+      if (tipoEntrega === "Retirada no local") {
+        freteAtual = 0;
+        document.getElementById("valor-frete").textContent = "Grátis";
+      } else {
+        freteAtual = carrinho.length > 0 ? freteCalculado : 0;
+        document.getElementById("valor-frete").textContent = formatarReal(freteAtual);
+      }
+
       contador.textContent = totalItens;
       document.getElementById("valor-subtotal").textContent = formatarReal(subtotal);
-      document.getElementById("valor-total").textContent = formatarReal(subtotal);
+      document.getElementById("valor-total").textContent = formatarReal(subtotal + freteAtual);
     }
 
     function abrirCarrinho() {
@@ -625,13 +682,19 @@
         return "- " + item.qtd + "x " + item.nome + " (" + formatarReal(item.preco * item.qtd) + ")";
       }).join("\n");
 
-      var total = carrinho.reduce(function(acc, item) { return acc + item.preco * item.qtd; }, 0);
+      var subtotal = carrinho.reduce(function(acc, item) { return acc + item.preco * item.qtd; }, 0);
+      var freteAtual = entrega === "Retirada no local" ? 0 : freteCalculado;
+      var total = subtotal + freteAtual;
 
       var mensagem =
         "Novo Pedido — NOTCH5 STUDIO CRIATIVO\n\n" +
         "Itens:\n" + linhasProdutos + "\n\n" +
+        "Subtotal: " + formatarReal(subtotal) + "\n" +
+        "Entrega (" + entrega + "): " + (entrega === "Retirada no local" ? "Grátis" : formatarReal(freteAtual)) + "\n" +
         "Total: " + formatarReal(total) + "\n" +
-        "Entrega: " + entrega + (cep ? " | CEP: " + cep : "") + (endereco ? "\nEndereço: " + endereco : "") + "\n" +
+        "Prazo estimado: " + prazoEstimadoTexto + "\n" +
+        (cep ? "CEP: " + cep + "\n" : "") +
+        (endereco ? "Endereço: " + endereco + "\n" : "") +
         "Pagamento: " + pagamento + "\n" +
         "Cliente: " + nome + (whatsCliente ? " (" + whatsCliente + ")" : "");
 
