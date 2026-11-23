@@ -3,200 +3,822 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NOTCH5 STUDIO CRIATIVO</title>
+  <title>NOTCH5 STUDIO CRIATIVO — Vitrine</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      color: #111;
-      line-height: 1.5;
+    body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; color: #222; }
+    header { background: #111; color: #fff; padding: 30px 20px; text-align: center; position: relative; }
+    .btn-carrinho-topo { position: fixed; top: 16px; right: 16px; z-index: 900; background: #0a7; color: #fff; border: none; padding: 11px 16px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.25); }
+
+    /* Barra de CEP em destaque */
+    .barra-cep-topo { background: #0033c6; color: #fff; padding: 10px 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+    .barra-cep-interna { max-width: 960px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+    .cep-chamada { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+    .cep-chamada strong { font-size: 14px; }
+    .cep-form-topo { display: flex; align-items: center; gap: 6px; }
+    .cep-form-topo input { padding: 7px 11px; border: none; border-radius: 6px; font-size: 14px; width: 155px; outline: none; }
+    .cep-form-topo button { background: #e11d48; color: #fff; border: none; padding: 7px 14px; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; text-transform: uppercase; }
+    .cep-form-topo button:hover { background: #be123c; }
+    .cep-resultado-topo { font-size: 13px; color: #dbeafe; width: 100%; }
+
+    main { max-width: 960px; margin: 28px auto; padding: 0 16px; }
+    h2 { margin: 0 0 16px; }
+
+    /* Slider */
+    .slider-wrapper { margin-bottom: 28px; }
+    .slider-viewport { position: relative; width: 100%; overflow: hidden; border-radius: 12px; }
+    .slider-trilho { display: flex; width: 100%; transition: transform 0.45s ease; }
+    .slide { flex: 0 0 100%; width: 100%; box-sizing: border-box; height: 230px; border-radius: 12px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between; padding: 24px 32px; color: #fff; }
+    .slide img.bg-slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.22; z-index: 0; }
+    .slide-conteudo { position: relative; z-index: 2; max-width: 62%; text-align: left; }
+    .slide-tag { display: inline-block; background: #fff; color: #111; font-weight: 900; font-size: 12px; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+    .slide-conteudo h3 { margin: 0 0 8px; font-size: 28px; font-weight: 900; line-height: 1.15; text-transform: uppercase; }
+    .slide-conteudo p { margin: 0 0 14px; font-size: 14px; color: #f0f0f0; }
+    .slide-btn { display: inline-block; background: #e11d48; color: #fff; border: none; padding: 9px 18px; border-radius: 20px; font-weight: bold; font-size: 13px; text-transform: uppercase; cursor: pointer; text-decoration: none; }
+    .slide-btn:hover { background: #be123c; }
+    .slide-destaque-img { position: relative; z-index: 2; flex-shrink: 0; width: 150px; height: 150px; border-radius: 12px; object-fit: cover; box-shadow: 0 6px 16px rgba(0,0,0,0.35); background: rgba(255,255,255,0.12); }
+
+    .slider-seta { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.45); color: #fff; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 16px; cursor: pointer; z-index: 10; }
+    .slider-seta:hover { background: rgba(0,0,0,0.75); }
+    .slider-seta.ant { left: 10px; }
+    .slider-seta.prox { right: 10px; }
+
+    .slider-pontos { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 12px; }
+    .ponto { width: 10px; height: 10px; border-radius: 50%; background: #d1d5db; border: none; cursor: pointer; padding: 0; transition: all 0.25s ease; }
+    .ponto.ativo { width: 13px; height: 13px; background: #0033c6; }
+
+    @media (max-width: 600px) {
+      .slide { height: 200px; padding: 18px 20px; }
+      .slide-conteudo { max-width: 65%; }
+      .slide-conteudo h3 { font-size: 20px; }
+      .slide-destaque-img { width: 105px; height: 105px; }
     }
-    header {
-      background: #111;
-      color: #fff;
-      padding: 24px 16px;
-      text-align: center;
-    }
-    header h1 {
-      margin: 0 0 6px;
-      font-size: 26px;
-    }
-    header p {
-      margin: 0;
-      color: #ddd;
-    }
-    main {
-      max-width: 820px;
-      margin: 24px auto;
-      padding: 0 16px;
-    }
-    .caixa {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    .vitrine-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 12px;
-      margin-top: 12px;
-    }
-    .card-item {
-      border: 1px solid #e2e2e2;
-      border-radius: 8px;
-      padding: 12px;
-      background: #fafafa;
-    }
-    .campo {
-      margin-bottom: 12px;
-    }
-    label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 4px;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      box-sizing: border-box;
-      border: 1px solid #bbb;
-      border-radius: 6px;
-      font-family: inherit;
-      font-size: 15px;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #111;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #333;
-    }
-    #statusPedidoNotch5 {
-      margin-top: 12px;
-      font-weight: bold;
-    }
+
+    .vitrine { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+    .produto { background: #fff; border-radius: 10px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; }
+    .produto img { width: 100%; height: 160px; object-fit: cover; border-radius: 6px; margin-bottom: 12px; background: #e9e9e9; }
+    .produto h3 { margin: 0 0 8px; font-size: 18px; }
+    .produto p { margin: 0 0 14px; color: #555; font-size: 14px; }
+    .preco { font-size: 20px; font-weight: bold; color: #0a7; margin-bottom: 12px; }
+    .btn-comprar { width: 100%; background: #111; color: #fff; border: none; padding: 11px 14px; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; }
+    .btn-comprar:hover { background: #0a7; }
+
+    /* Sanfona Mais / Menos Informações */
+    .info-sanfona-box { margin-top: 32px; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
+    .info-conteudo-expansivel { display: none; padding: 22px 20px 14px; border-bottom: 1px solid #e5e7eb; }
+    .info-conteudo-expansivel.aberto { display: block; }
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+    .info-coluna h3 { margin: 0 0 8px; font-size: 16px; color: #0033c6; text-transform: uppercase; }
+    .info-coluna p { margin: 0 0 10px; font-size: 14px; line-height: 1.6; color: #444; }
+    .info-coluna p:last-child { margin-bottom: 0; }
+    .quem-somos-resto, .entrega-resto { display: none; }
+    .quem-somos-resto.aberto, .entrega-resto.aberto { display: inline; }
+    .btn-ler-mais-texto { background: #111; color: #fff; border: none; border-radius: 6px; font-weight: bold; font-size: 13px; padding: 7px 14px; margin-top: 8px; cursor: pointer; display: inline-block; }
+    .btn-ler-mais-texto:hover { background: #0033c6; }
+    .info-toggle-area { text-align: center; padding: 14px; background: #fff; }
+    .btn-info-toggle { background: #fff; color: #0033c6; border: 1px solid #cbd5e1; padding: 11px 24px; border-radius: 8px; font-weight: bold; font-size: 14px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-info-toggle:hover { background: #f8fafc; }
+
+    /* Rodapé rotativo */
+    footer { background: #222; color: #ccc; text-align: center; padding: 20px; margin-top: 40px; font-size: 14px; min-height: 24px; }
+    .rodape-slide { display: none; margin: 0; }
+    .rodape-slide.ativo { display: block; }
+
+    /* Carrinho e Checkout */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: flex-end; }
+    .overlay.ativo { display: flex; }
+    .painel-carrinho { background: #fff; width: 100%; max-width: 440px; height: 100%; overflow-y: auto; padding: 22px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; }
+    .topo-carrinho { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding-bottom: 12px; margin-bottom: 14px; }
+    .topo-carrinho h2 { margin: 0; font-size: 20px; }
+    .btn-fechar { background: #eee; border: none; font-size: 18px; font-weight: bold; width: 34px; height: 34px; border-radius: 6px; cursor: pointer; }
+    .item-carrinho { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 10px 0; gap: 10px; }
+    .item-info { flex: 1; font-size: 14px; }
+    .item-info strong { display: block; margin-bottom: 3px; }
+    .qtd-controles { display: flex; align-items: center; gap: 6px; }
+    .qtd-controles button { width: 26px; height: 26px; border: 1px solid #ccc; background: #f9f9f9; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .bloco-checkout { background: #f8f8f8; border: 1px solid #e2e2e2; border-radius: 8px; padding: 14px; margin-top: 14px; }
+    .bloco-checkout h3 { margin: 0 0 10px; font-size: 15px; }
+    .campo { width: 100%; padding: 9px 10px; margin-bottom: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+    .linha-cep { display: flex; gap: 8px; margin-bottom: 8px; }
+    .linha-cep input { flex: 1; margin-bottom: 0; }
+    .btn-cep { background: #111; color: #fff; border: none; padding: 0 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .resumo-valores { border-top: 1px solid #ddd; margin-top: 14px; padding-top: 12px; font-size: 15px; }
+    .resumo-linha { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .resumo-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #0a7; margin-top: 8px; }
+    .btn-finalizar { width: 100%; background: #0a7; color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 14px; }
+    .btn-finalizar:hover { background: #085; }
+    .btn-finalizar:disabled { background: #6b7280; cursor: not-allowed; }
+
+    /* Comprovante dentro do próprio site */
+    .comprovante-box { display: none; background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 14px; margin-top: 14px; }
+    .comprovante-box.ativo { display: block; }
+    .comprovante-box h3 { margin: 0 0 8px; color: #065f46; font-size: 16px; }
+    .comprovante-texto { white-space: pre-line; font-size: 13px; color: #1f2937; background: #fff; border: 1px solid #d1fae5; border-radius: 6px; padding: 10px; margin-bottom: 10px; }
+    .status-envio-email { font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #065f46; }
+    .btn-copiar { width: 100%; background: #111; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 8px; }
+    .btn-copiar:hover { background: #0033c6; }
+    .btn-novo-pedido { width: 100%; background: #e5e7eb; color: #111; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; }
   </style>
 </head>
 <body>
+  <button class="btn-carrinho-topo" type="button" onclick="abrirCarrinho()">Carrinho (<span id="contador-carrinho">0</span>)</button>
 
   <header>
     <h1>NOTCH5 STUDIO CRIATIVO</h1>
-    <p>Sublimação • Personalização e Adesivos • Elétrica • Turismo</p>
+    <p>SUBLIMAÇÃO - PERSONALIZAÇÃO - ELÉTRICA - TURISMO</p>
   </header>
 
+  <div class="barra-cep-topo">
+    <div class="barra-cep-interna">
+      <div class="cep-chamada">
+        <span>&#128205;</span>
+        <span id="texto-cep-topo"><strong>Informe seu CEP</strong> para consultar prazo e entrega</span>
+      </div>
+      <div class="cep-form-topo">
+        <input type="text" id="cep-topo-input" maxlength="9" placeholder="00000-000" onkeydown="if(event.key==='Enter') consultarCepTopo()">
+        <button type="button" onclick="consultarCepTopo()">OK</button>
+      </div>
+      <div class="cep-resultado-topo" id="resultado-cep-topo" style="display:none;"></div>
+    </div>
+  </div>
+
   <main>
-    <section class="caixa">
-      <h2>Vitrine de Serviços e Produtos</h2>
-      <div class="vitrine-grid">
-        <div class="card-item">
-          <strong>Sublimação</strong>
-          <p>Produtos e brindes personalizados com acabamento de qualidade.</p>
+    <h2>Produtos em Destaque</h2>
+
+    <div class="slider-wrapper">
+      <div class="slider-viewport">
+        <div class="slider-trilho" id="slider-trilho">
+
+          <div class="slide" style="background: linear-gradient(125deg, #091534 0%, #0f296b 65%, #1d4ed8 100%);">
+            <img class="bg-slide" src="banner-1.jpg" alt="" onerror="this.style.display='none'">
+            <div class="slide-conteudo">
+              <span class="slide-tag">Linha Personalizada</span>
+              <h3>Sublimação &amp; Brindes</h3>
+              <p>Arte exclusiva e acabamento profissional para você ou sua empresa.</p>
+              <a class="slide-btn" href="#vitrine-produtos">Confira</a>
+            </div>
+            <img class="slide-destaque-img" src="item-1.jpg" alt="Sublimação" onerror="this.style.display='none'">
+          </div>
+
+          <div class="slide" style="background: linear-gradient(125deg, #0b132b 0%, #1c2541 65%, #0a7 100%);">
+            <img class="bg-slide" src="banner-2.jpg" alt="" onerror="this.style.display='none'">
+            <div class="slide-conteudo">
+              <span class="slide-tag">Atendimento Rápido</span>
+              <h3>Serviços de Elétrica</h3>
+              <p>Instalações e manutenções residenciais e comerciais com segurança.</p>
+              <a class="slide-btn" href="#vitrine-produtos">Confira</a>
+            </div>
+            <img class="slide-destaque-img" src="item-2.jpg" alt="Elétrica" onerror="this.style.display='none'">
+          </div>
+
+          <div class="slide" style="background: linear-gradient(125deg, #111827 0%, #1e3a8a 65%, #e11d48 100%);">
+            <img class="bg-slide" src="banner-3.jpg" alt="" onerror="this.style.display='none'">
+            <div class="slide-conteudo">
+              <span class="slide-tag">Viagens &amp; Roteiros</span>
+              <h3>Turismo &amp; Excursões</h3>
+              <p>Pacotes organizados para você viajar com conforto e tranquilidade.</p>
+              <a class="slide-btn" href="#vitrine-produtos">Confira</a>
+            </div>
+            <img class="slide-destaque-img" src="item-3.jpg" alt="Turismo" onerror="this.style.display='none'">
+          </div>
+
         </div>
-        <div class="card-item">
-          <strong>Personalização e Adesivos</strong>
-          <p>Adesivos e itens sob medida para divulgar ou identificar seu projeto.</p>
+
+        <button class="slider-seta ant" type="button" onclick="mudarSlide(-1)">&#10094;</button>
+        <button class="slider-seta prox" type="button" onclick="mudarSlide(1)">&#10095;</button>
+      </div>
+
+      <div class="slider-pontos" id="slider-pontos">
+        <button class="ponto ativo" type="button" onclick="irParaSlide(0)"></button>
+        <button class="ponto" type="button" onclick="irParaSlide(1)"></button>
+        <button class="ponto" type="button" onclick="irParaSlide(2)"></button>
+      </div>
+    </div>
+
+    <div class="vitrine" id="vitrine-produtos">
+
+      <div class="produto">
+        <div>
+          <h3>Adesivo em Vinil Sublimático</h3>
+          <p>Acabamento resistente para personalização e kits.</p>
         </div>
-        <div class="card-item">
-          <strong>Elétrica</strong>
-          <p>Montagem, manutenção e soluções elétricas com segurança.</p>
-        </div>
-        <div class="card-item">
-          <strong>Turismo</strong>
-          <p>Atendimento e informações para roteiros e viagens.</p>
+        <div>
+          <div class="preco">R$ 15,00</div>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Adesivo em Vinil Sublimático', 15.00)">Comprar</button>
         </div>
       </div>
-    </section>
 
-    <section id="pedido-notch5" class="caixa">
-      <h2>Fazer Pedido — NOTCH5 STUDIO CRIATIVO</h2>
-
-      <form id="formPedidoNotch5" action="https://formspree.io/f/mqpqgbyy" method="POST">
-        <div class="campo">
-          <label for="cliente_nome">Seu nome</label>
-          <input type="text" id="cliente_nome" name="nome" required placeholder="Digite seu nome">
+      <div class="produto">
+        <div>
+          <h3>Cartela de Adesivos</h3>
+          <p>Arte personalizada pronta para aplicação e divulgação.</p>
         </div>
-
-        <div class="campo">
-          <label for="cliente_contato">WhatsApp ou E-mail</label>
-          <input type="text" id="cliente_contato" name="contato" required placeholder="Seu WhatsApp ou e-mail para retorno">
+        <div>
+          <div class="preco">R$ 25,00</div>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Cartela de Adesivos', 25.00)">Comprar</button>
         </div>
+      </div>
 
-        <div class="campo">
-          <label for="categoria_servico">Categoria / Serviço</label>
-          <select id="categoria_servico" name="categoria" required>
-            <option value="">Selecione...</option>
-            <option value="Sublimacao">Sublimação</option>
-            <option value="Personalizacao e Adesivos">Personalização e Adesivos</option>
-            <option value="Eletrica">Elétrica</option>
-            <option value="Turismo">Turismo</option>
-          </select>
+      <div class="produto">
+        <div>
+          <img src="item-1.jpg" alt="Produto 3">
+          <h3>Produto 3</h3>
+          <p>Descrição curta do produto 3.</p>
         </div>
-
-        <div class="campo">
-          <label for="detalhes_pedido">Detalhes do pedido</label>
-          <textarea id="detalhes_pedido" name="mensagem" rows="4" required placeholder="Descreva o produto, arte/adesivo, medida, quantidade ou serviço desejado..."></textarea>
+        <div>
+          <div class="preco">R$ 0,00</div>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 3', 0.00)">Comprar</button>
         </div>
+      </div>
 
-        <input type="hidden" name="_subject" value="Novo pedido — NOTCH5 STUDIO CRIATIVO">
+      <div class="produto">
+        <div>
+          <img src="item-2.jpg" alt="Produto 4">
+          <h3>Produto 4</h3>
+          <p>Descrição curta do produto 4.</p>
+        </div>
+        <div>
+          <div class="preco">R$ 0,00</div>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 4', 0.00)">Comprar</button>
+        </div>
+      </div>
 
-        <button type="submit">Enviar Pedido</button>
+      <div class="produto">
+        <div>
+          <img src="item-3.jpg" alt="Produto 5">
+          <h3>Produto 5</h3>
+          <p>Descrição curta do produto 5.</p>
+        </div>
+        <div>
+          <div class="preco">R$ 0,00</div>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 5', 0.00)">Comprar</button>
+        </div>
+      </div>
 
-        <p id="statusPedidoNotch5"></p>
-      </form>
-    </section>
+      <div class="produto">
+        <div>
+          <img src="item-4.jpg" alt="Produto 6">
+          <h3>Produto 6</h3>
+          <p>Descrição curta do produto 6.</p>
+        </div>
+        <div>
+          <div class="preco">R$ 0,00</div>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 6', 0.00)">Comprar</button>
+        </div>
+      </div>
 
-    <section class="caixa">
-      <h2>Sobre a Empresa</h2>
-      <p>O <strong>NOTCH5 STUDIO CRIATIVO</strong> reúne soluções criativas, personalização, serviços elétricos e atendimento em turismo com foco em compromisso e capricho em cada entrega.</p>
+      <div class="produto">
+        <div>
+          <img src="item-5.jpg" alt="Produto 7">
+          <h3>Produto 7</h3>
+          <p>Descrição curta do produto 7.</p>
+        </div>
+        <div>
+          <div class="preco">R$ 0,00</div>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 7', 0.00)">Comprar</button>
+        </div>
+      </div>
 
-      <h3>Entrega</h3>
-      <p>As condições, prazos e formas de retirada ou entrega são combinados conforme o pedido e a localização do cliente.</p>
+      <div class="produto">
+        <div>
+          <img src="item-6.jpg" alt="Produto 8">
+          <h3>Produto 8</h3>
+          <p>Descrição curta do produto 8.</p>
+        </div>
+        <div>
+          <div class="preco">R$ 0,00</div>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 8', 0.00)">Comprar</button>
+        </div>
+      </div>
 
-      <h3>Política de Privacidade</h3>
-      <p>Os dados informados neste formulário (nome, contato e detalhes do pedido) são utilizados exclusivamente para responder à sua solicitação e não são repassados a terceiros sem necessidade do serviço.</p>
-    </section>
+      <div class="produto">
+        <div>
+          <img src="item-7.jpg" alt="Produto 9">
+          <h3>Produto 9</h3>
+          <p>Descrição curta do produto 9.</p>
+        </div>
+        <div>
+          <div class="preco">R$ 0,00</div>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 9', 0.00)">Comprar</button>
+        </div>
+      </div>
+
+      <div class="produto">
+        <div>
+          <img src="item-8.jpg" alt="Produto 10">
+          <h3>Produto 10</h3>
+          <p>Descrição curta do produto 10.</p>
+        </div>
+        <div>
+          <div class="preco">R$ 0,00</div>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 10', 0.00)">Comprar</button>
+        </div>
+      </div>
+
+      <div class="produto">
+        <div>
+          <img src="item-9.jpg" alt="Produto 11">
+          <h3>Produto 11</h3>
+          <p>Descrição curta do produto 11.</p>
+        </div>
+        <div>
+          <div class="preco">R$ 0,00</div>
+          <button class="btn-comprar" type="button" onclick="adicionarAoCarrinho('Produto 11', 0.00)">Comprar</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="info-sanfona-box">
+      <div class="info-conteudo-expansivel" id="conteudo-mais-info">
+        <div class="info-grid">
+          <div class="info-coluna">
+            <h3>Quem Somos</h3>
+            <p>
+              A <strong>NOTCH5 STUDIO CRIATIVO</strong> nasceu da vontade de transformar trabalho duro, dedicação e criatividade em algo que marque as pessoas de verdade. Mais do que prestar serviços, cada entrega carrega o compromisso de quem faz acontecer com as próprias mãos
+              <span class="quem-somos-resto" id="quem-somos-resto">
+                — seja dando cor e identidade com <strong>sublimação</strong> e personalização, levando energia firme e segura com <strong>elétrica</strong>, <strong>geradores</strong> e <strong>eventos</strong>, ou ajudando alguém a realizar uma viagem e um momento especial. Por trás de cada detalhe existe um sonho maior: construir e consolidar um estúdio próprio para a <strong>NOTCH5</strong>, um espaço criativo e de estrutura onde todas essas frentes caminham juntas, crescendo passo a passo, com respeito a quem confia no nosso trabalho e orgulho de cada conquista alcançada ao longo do caminho.
+              </span>
+            </p>
+            <button class="btn-ler-mais-texto" id="btn-ler-mais-texto" type="button" onclick="alternarLeituraQuemSomos()">Ler mais</button>
+          </div>
+          <div class="info-coluna">
+            <h3>Entrega</h3>
+            <p>
+              O frete e o prazo são calculados pelo CEP no site com envio para todo o Brasil,
+              <span class="entrega-resto" id="entrega-resto">
+                somando o prazo de produção de 3 a 5 dias úteis para itens personalizados ao prazo da entrega/transporte. Você também pode escolher retirada no local (Grátis) e alinhar a confirmação depois pelo WhatsApp.
+              </span>
+            </p>
+            <button class="btn-ler-mais-texto" id="btn-ler-mais-entrega" type="button" onclick="alternarLeituraEntrega()">Leia mais</button>
+          </div>
+          <div class="info-coluna">
+            <h3>Política de Privacidade</h3>
+            <p>Os dados informados no pedido são utilizados exclusivamente para orçamento, produção, pagamento e entrega dos pedidos, sem compartilhamento com terceiros.</p>
+          </div>
+        </div>
+      </div>
+      <div class="info-toggle-area">
+        <button class="btn-info-toggle" id="btn-mais-info" type="button" onclick="alternarMaisInformacoes()">MAIS INFORMAÇÕES &#709;</button>
+      </div>
+    </div>
   </main>
 
+  <footer>
+    <p class="rodape-slide ativo">NOTCH5 STUDIO CRIATIVO — Todos os direitos reservados</p>
+    <p class="rodape-slide">SUBLIMAÇÃO • PERSONALIZAÇÃO • ELÉTRICA • TURISMO</p>
+    <p class="rodape-slide">Pedido direto no site e confirmação por e-mail</p>
+  </footer>
+
+  <!-- Carrinho + Entrega + Dados do Cliente + Pagamento -->
+  <div class="overlay" id="overlay-carrinho">
+    <div class="painel-carrinho">
+      <div>
+        <div class="topo-carrinho">
+          <h2>Meu Carrinho</h2>
+          <button class="btn-fechar" type="button" onclick="fecharCarrinho()">✕</button>
+        </div>
+
+        <div id="formulario-checkout">
+          <div id="lista-itens-carrinho"></div>
+
+          <div class="bloco-checkout">
+            <h3>1. Entrega e Frete</h3>
+            <select class="campo" id="tipo-entrega" onchange="atualizarResumo()">
+              <option value="Retirada no local">Retirada no local (Grátis)</option>
+              <option value="Entrega / Envio">Entrega / Envio pelo CEP</option>
+            </select>
+            <div class="linha-cep">
+              <input class="campo" type="text" id="cep-cliente" maxlength="9" placeholder="Digite seu CEP (ex: 09900-000)">
+              <button class="btn-cep" type="button" onclick="consultarCep()">Calcular</button>
+            </div>
+            <div id="status-cep" style="font-size:13px; color:#555; margin-bottom:6px;"></div>
+            <input class="campo" type="text" id="endereco-cliente" placeholder="Rua, número, bairro e cidade">
+          </div>
+
+          <div class="bloco-checkout">
+            <h3>2. Seus Dados</h3>
+            <input class="campo" type="text" id="nome-cliente" placeholder="Seu nome completo">
+            <input class="campo" type="tel" id="whats-cliente" placeholder="Seu WhatsApp com DDD">
+          </div>
+
+          <div class="bloco-checkout">
+            <h3>3. Forma de Pagamento</h3>
+            <select class="campo" id="forma-pagamento">
+              <option value="Pix">Pix</option>
+              <option value="Cartão de Crédito">Cartão de Crédito</option>
+              <option value="Cartão de Débito">Cartão de Débito</option>
+              <option value="Dinheiro">Dinheiro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="comprovante-box" id="comprovante-pedido">
+          <h3>Pedido Registrado no Site</h3>
+          <div class="status-envio-email" id="status-envio-email"></div>
+          <div class="comprovante-texto" id="comprovante-texto"></div>
+          <button class="btn-copiar" type="button" onclick="copiarComprovante()">Copiar Resumo do Pedido</button>
+          <button class="btn-novo-pedido" type="button" onclick="iniciarNovoPedido()">Fazer Novo Pedido</button>
+        </div>
+      </div>
+
+      <div id="rodape-checkout">
+        <div class="resumo-valores">
+          <div class="resumo-linha"><span>Subtotal:</span><span id="valor-subtotal">R$ 0,00</span></div>
+          <div class="resumo-linha"><span>Entrega:</span><span id="valor-frete">Grátis</span></div>
+          <div class="resumo-total"><span>Total:</span><span id="valor-total">R$ 0,00</span></div>
+        </div>
+        <button class="btn-finalizar" id="btn-finalizar-compra" type="button" onclick="finalizarPedido()">Finalizar Compra</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    const FORMSPREE_URL = "https://formspree.io/f/mqpqgbyy";
-    const formNotch5 = document.getElementById("formPedidoNotch5");
-    const statusNotch5 = document.getElementById("statusPedidoNotch5");
+    var FORMSPREE_URL = "https://formspree.io/f/mqpqgbyy";
 
-    formNotch5.addEventListener("submit", async function (evento) {
-      evento.preventDefault();
-      statusNotch5.textContent = "Enviando pedido...";
+    var slideAtual = 0;
+    var trilho = document.getElementById("slider-trilho");
+    var totalSlides = document.querySelectorAll(".slide").length;
+    var pontos = document.querySelectorAll(".ponto");
 
-      const dados = new FormData(formNotch5);
+    function mostrarSlide(indice) {
+      if (indice >= totalSlides) slideAtual = 0;
+      else if (indice < 0) slideAtual = totalSlides - 1;
+      else slideAtual = indice;
+
+      trilho.style.transform = "translateX(-" + (slideAtual * 100) + "%)";
+      pontos.forEach(function(p) { p.classList.remove("ativo"); });
+      pontos[slideAtual].classList.add("ativo");
+    }
+
+    function mudarSlide(direcao) {
+      mostrarSlide(slideAtual + direcao);
+    }
+
+    function irParaSlide(indice) {
+      mostrarSlide(indice);
+    }
+
+    setInterval(function() {
+      mudarSlide(1);
+    }, 4000);
+
+    var rodapeAtual = 0;
+    var rodapeSlides = document.querySelectorAll(".rodape-slide");
+    setInterval(function() {
+      rodapeSlides[rodapeAtual].classList.remove("ativo");
+      rodapeAtual = (rodapeAtual + 1) % rodapeSlides.length;
+      rodapeSlides[rodapeAtual].classList.add("ativo");
+    }, 3500);
+
+    function alternarMaisInformacoes() {
+      var caixa = document.getElementById("conteudo-mais-info");
+      var botao = document.getElementById("btn-mais-info");
+      var aberto = caixa.classList.toggle("aberto");
+      botao.innerHTML = aberto ? "MENOS INFORMAÇÕES &#708;" : "MAIS INFORMAÇÕES &#709;";
+    }
+
+    function alternarLeituraQuemSomos() {
+      var resto = document.getElementById("quem-somos-resto");
+      var botao = document.getElementById("btn-ler-mais-texto");
+      var aberto = resto.classList.toggle("aberto");
+      botao.textContent = aberto ? "Mostrar menos" : "Ler mais";
+    }
+
+    function alternarLeituraEntrega() {
+      var resto = document.getElementById("entrega-resto");
+      var botao = document.getElementById("btn-ler-mais-entrega");
+      var aberto = resto.classList.toggle("aberto");
+      botao.textContent = aberto ? "Mostrar menos" : "Leia mais";
+    }
+
+    var freteCalculado = 0;
+    var prazoEstimadoTexto = "3 a 5 dias úteis (produção para personalizados)";
+
+    function calcularFreteEPrazoPorCep(cepLimpo, uf, localidade) {
+      var prefixo = parseInt(cepLimpo.slice(0, 5), 10);
+      var cidadeNorm = (localidade || "").toLowerCase();
+
+      if (prefixo >= 9900 && prefixo <= 9999 && cidadeNorm.indexOf("diadema") !== -1) {
+        return {
+          valor: 12.00,
+          prazo: "3 a 5 dias úteis (produção) + até 1 dia útil de entrega"
+        };
+      }
+
+      if (prefixo >= 1000 && prefixo <= 9999) {
+        return {
+          valor: 18.00,
+          prazo: "3 a 5 dias úteis (produção) + 1 a 2 dias úteis de entrega"
+        };
+      }
+
+      if (uf === "SP" || (prefixo >= 11000 && prefixo <= 19999)) {
+        return {
+          valor: 24.00,
+          prazo: "3 a 5 dias úteis (produção) + 2 a 4 dias úteis de envio"
+        };
+      }
+
+      if (["RJ", "MG", "ES", "PR", "SC", "RS"].indexOf(uf) !== -1) {
+        return {
+          valor: 32.00,
+          prazo: "3 a 5 dias úteis (produção) + 3 a 6 dias úteis de envio"
+        };
+      }
+
+      return {
+        valor: 42.00,
+        prazo: "3 a 5 dias úteis (produção) + 4 a 8 dias úteis de envio"
+      };
+    }
+
+    function aplicarDadosCep(cepFormatado, dados) {
+      var calculo = calcularFreteEPrazoPorCep(cepFormatado.replace(/\D/g, ""), dados.uf, dados.localidade);
+      freteCalculado = calculo.valor;
+      prazoEstimadoTexto = calculo.prazo;
+
+      var enderecoCompleto =
+        (dados.logradouro || "") + ", Nº  - " + (dados.bairro || "") + ", " + dados.localidade + "/" + dados.uf;
+
+      document.getElementById("cep-topo-input").value = cepFormatado;
+      document.getElementById("texto-cep-topo").innerHTML =
+        "Enviar para <strong>" + dados.localidade + "/" + dados.uf + "</strong> (" + cepFormatado + ") — Frete: <strong>" + formatarReal(freteCalculado) + "</strong>";
+
+      var resultadoTopo = document.getElementById("resultado-cep-topo");
+      resultadoTopo.style.display = "block";
+      resultadoTopo.textContent = "Prazo estimado: " + prazoEstimadoTexto + ".";
+
+      document.getElementById("cep-cliente").value = cepFormatado;
+      document.getElementById("endereco-cliente").value = enderecoCompleto;
+      document.getElementById("tipo-entrega").value = "Entrega / Envio";
+      document.getElementById("status-cep").textContent =
+        "Frete: " + formatarReal(freteCalculado) + " | Prazo: " + prazoEstimadoTexto + ".";
+      atualizarResumo();
+    }
+
+    function consultarCepTopo() {
+      var inputTopo = document.getElementById("cep-topo-input");
+      var cep = inputTopo.value.replace(/\D/g, "");
+      var resultadoTopo = document.getElementById("resultado-cep-topo");
+
+      if (cep.length !== 8) {
+        resultadoTopo.style.display = "block";
+        resultadoTopo.textContent = "Digite um CEP válido com 8 números (ex: 09900-000).";
+        return;
+      }
+
+      var cepFormatado = cep.slice(0, 5) + "-" + cep.slice(5);
+      resultadoTopo.style.display = "block";
+      resultadoTopo.textContent = "Calculando frete e prazo para " + cepFormatado + "...";
+
+      fetch("https://viacep.com.br/ws/" + cep + "/json/")
+        .then(function(r) { return r.json(); })
+        .then(function(dados) {
+          if (dados.erro) {
+            resultadoTopo.textContent = "CEP não encontrado. Confira os números digitados.";
+          } else {
+            aplicarDadosCep(cepFormatado, dados);
+          }
+        })
+        .catch(function() {
+          resultadoTopo.textContent = "Não foi possível consultar agora. Você pode informar no carrinho.";
+        });
+    }
+
+    var carrinho = [];
+
+    function formatarReal(valor) {
+      return "R$ " + valor.toFixed(2).replace(".", ",");
+    }
+
+    function adicionarAoCarrinho(nome, preco) {
+      document.getElementById("formulario-checkout").style.display = "block";
+      document.getElementById("rodape-checkout").style.display = "block";
+      document.getElementById("comprovante-pedido").classList.remove("ativo");
+
+      var existente = carrinho.find(function(item) { return item.nome === nome; });
+      if (existente) {
+        existente.qtd += 1;
+      } else {
+        carrinho.push({ nome: nome, preco: preco, qtd: 1 });
+      }
+      atualizarResumo();
+      abrirCarrinho();
+    }
+
+    function alterarQtd(index, delta) {
+      carrinho[index].qtd += delta;
+      if (carrinho[index].qtd <= 0) {
+        carrinho.splice(index, 1);
+      }
+      atualizarResumo();
+    }
+
+    function consultarCep() {
+      var cep = document.getElementById("cep-cliente").value.replace(/\D/g, "");
+      var status = document.getElementById("status-cep");
+      if (cep.length !== 8) {
+        status.textContent = "Informe um CEP válido com 8 números.";
+        return;
+      }
+      var cepFormatado = cep.slice(0, 5) + "-" + cep.slice(5);
+      status.textContent = "Calculando frete e prazo...";
+      fetch("https://viacep.com.br/ws/" + cep + "/json/")
+        .then(function(r) { return r.json(); })
+        .then(function(dados) {
+          if (dados.erro) {
+            status.textContent = "CEP não encontrado.";
+          } else {
+            aplicarDadosCep(cepFormatado, dados);
+          }
+        })
+        .catch(function() {
+          status.textContent = "Preencha o endereço manualmente abaixo.";
+        });
+    }
+
+    function atualizarResumo() {
+      var lista = document.getElementById("lista-itens-carrinho");
+      var contador = document.getElementById("contador-carrinho");
+      lista.innerHTML = "";
+      var totalItens = 0;
+      var subtotal = 0;
+
+      if (carrinho.length === 0) {
+        lista.innerHTML = '<p style="color:#666; font-size:14px;">Seu carrinho está vazio.</p>';
+      } else {
+        carrinho.forEach(function(item, i) {
+          totalItens += item.qtd;
+          subtotal += item.preco * item.qtd;
+          var div = document.createElement("div");
+          div.className = "item-carrinho";
+          div.innerHTML =
+            '<div class="item-info"><strong>' + item.nome + '</strong><span>' + formatarReal(item.preco) + ' cada</span></div>' +
+            '<div class="qtd-controles">' +
+              '<button type="button" onclick="alterarQtd(' + i + ', -1)">-</button>' +
+              '<span>' + item.qtd + '</span>' +
+              '<button type="button" onclick="alterarQtd(' + i + ', 1)">+</button>' +
+            '</div>';
+          lista.appendChild(div);
+        });
+      }
+
+      var tipoEntrega = document.getElementById("tipo-entrega").value;
+      var freteAtual = 0;
+
+      if (tipoEntrega === "Retirada no local") {
+        freteAtual = 0;
+        document.getElementById("valor-frete").textContent = "Grátis";
+      } else {
+        freteAtual = carrinho.length > 0 ? freteCalculado : 0;
+        document.getElementById("valor-frete").textContent = formatarReal(freteAtual);
+      }
+
+      contador.textContent = totalItens;
+      document.getElementById("valor-subtotal").textContent = formatarReal(subtotal);
+      document.getElementById("valor-total").textContent = formatarReal(subtotal + freteAtual);
+    }
+
+    function abrirCarrinho() {
+      document.getElementById("overlay-carrinho").classList.add("ativo");
+    }
+
+    function fecharCarrinho() {
+      document.getElementById("overlay-carrinho").classList.remove("ativo");
+    }
+
+    function enviarPedidoParaFormspree(payload) {
+      return fetch(FORMSPREE_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(payload)
+      }).then(function(resposta) {
+        if (!resposta.ok) {
+          throw new Error("Falha no envio ao Formspree");
+        }
+        return resposta.json();
+      });
+    }
+
+    function finalizarPedido() {
+      if (carrinho.length === 0) {
+        alert("Adicione pelo menos um produto no carrinho.");
+        return;
+      }
+      var nome = document.getElementById("nome-cliente").value.trim();
+      var whatsCliente = document.getElementById("whats-cliente").value.trim();
+      var entrega = document.getElementById("tipo-entrega").value;
+      var cep = document.getElementById("cep-cliente").value.trim();
+      var endereco = document.getElementById("endereco-cliente").value.trim();
+      var pagamento = document.getElementById("forma-pagamento").value;
+
+      if (!nome) {
+        alert("Digite seu nome para finalizar.");
+        return;
+      }
+
+      var botaoFinalizar = document.getElementById("btn-finalizar-compra");
+      botaoFinalizar.disabled = true;
+      botaoFinalizar.textContent = "Enviando pedido...";
+
+      var numeroPedido = "N5-" + String(Date.now()).slice(-5);
+      var linhasProdutos = carrinho.map(function(item) {
+        return "- " + item.qtd + "x " + item.nome + " (" + formatarReal(item.preco * item.qtd) + ")";
+      }).join("\n");
+
+      var subtotal = carrinho.reduce(function(acc, item) { return acc + item.preco * item.qtd; }, 0);
+      var freteAtual = entrega === "Retirada no local" ? 0 : freteCalculado;
+      var total = subtotal + freteAtual;
+      var freteTexto = entrega === "Retirada no local" ? "Grátis" : formatarReal(freteAtual);
+
+      var resumo =
+        "Pedido: " + numeroPedido + "\n" +
+        "Cliente: " + nome + (whatsCliente ? " | WhatsApp: " + whatsCliente : "") + "\n\n" +
+        "Itens:\n" + linhasProdutos + "\n\n" +
+        "Subtotal: " + formatarReal(subtotal) + "\n" +
+        "Entrega (" + entrega + "): " + freteTexto + "\n" +
+        "Total: " + formatarReal(total) + "\n" +
+        "Prazo estimado: " + prazoEstimadoTexto + "\n" +
+        (cep ? "CEP: " + cep + "\n" : "") +
+        (endereco ? "Endereço: " + endereco + "\n" : "") +
+        "Pagamento: " + pagamento;
 
       try {
-        const resposta = await fetch(FORMSPREE_URL, {
-          method: "POST",
-          body: dados,
-          headers: {
-            "Accept": "application/json"
-          }
+        var historico = JSON.parse(localStorage.getItem("notch5_pedidos") || "[]");
+        historico.unshift({
+          numero: numeroPedido,
+          data: new Date().toLocaleString("pt-BR"),
+          resumo: resumo
         });
+        localStorage.setItem("notch5_pedidos", JSON.stringify(historico));
+      } catch (e) {}
 
-        if (resposta.ok) {
-          statusNotch5.textContent = "Pedido enviado com sucesso! Em breve entraremos em contato.";
-          formNotch5.reset();
-        } else {
-          statusNotch5.textContent = "Não foi possível enviar agora. Tente novamente em instantes.";
-        }
-      } catch (erro) {
-        statusNotch5.textContent = "Erro de conexão ao enviar o pedido.";
+      var payloadFormspree = {
+        _subject: "Novo pedido " + numeroPedido + " — NOTCH5 STUDIO CRIATIVO",
+        pedido: numeroPedido,
+        cliente: nome,
+        whatsapp: whatsCliente || "Não informado",
+        itens: linhasProdutos,
+        subtotal: formatarReal(subtotal),
+        tipo_entrega: entrega,
+        frete: freteTexto,
+        total: formatarReal(total),
+        prazo_estimado: prazoEstimadoTexto,
+        cep: cep || "Não informado",
+        endereco: endereco || "Não informado",
+        pagamento: pagamento,
+        resumo_completo: resumo
+      };
+
+      enviarPedidoParaFormspree(payloadFormspree)
+        .then(function() {
+          document.getElementById("status-envio-email").textContent = "Pedido enviado para o seu e-mail via Formspree!";
+        })
+        .catch(function() {
+          document.getElementById("status-envio-email").textContent = "Pedido salvo no site. Se não chegou no e-mail, confira a conexão ou copie o resumo abaixo.";
+        })
+        .finally(function() {
+          botaoFinalizar.disabled = false;
+          botaoFinalizar.textContent = "Finalizar Compra";
+
+          document.getElementById("comprovante-texto").textContent = resumo;
+          document.getElementById("formulario-checkout").style.display = "none";
+          document.getElementById("rodape-checkout").style.display = "none";
+          document.getElementById("comprovante-pedido").classList.add("ativo");
+
+          carrinho = [];
+          atualizarResumo();
+        });
+    }
+
+    function copiarComprovante() {
+      var texto = document.getElementById("comprovante-texto").textContent;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).then(function() {
+          alert("Resumo do pedido copiado!");
+        }).catch(function() {
+          alert("Selecione o texto do resumo e copie manualmente.");
+        });
+      } else {
+        alert("Selecione o texto do resumo e copie manualmente.");
       }
-    });
-  </script>
+    }
 
+    function iniciarNovoPedido() {
+      document.getElementById("comprovante-pedido").classList.remove("ativo");
+      document.getElementById("formulario-checkout").style.display = "block";
+      document.getElementById("rodape-checkout").style.display = "block";
+      atualizarResumo();
+    }
+  </script>
 </body>
 </html>
+Como atualizar agora
+Copie o código completo acima (Ctrl + A / Ctrl + C), cole no seu index.html (no Bloco de Notas ou direto no GitHub) e salve.
+
+Envie para o GitHub para a Vercel publicar.
+
+Abra o site publicado, adicione um item ao carrinho, preencha seu nome e clique em Finalizar Compra para testar se chegou na sua caixa de entrada do Formspree/e-mail.
