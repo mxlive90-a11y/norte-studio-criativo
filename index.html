@@ -3,32 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Norte Studio Criativo</title>
+  <title>Norte Studio Criativo — Vitrine</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; color: #222; }
-    header { background: #111; color: #fff; padding: 32px 20px; text-align: center; }
-    main { max-width: 800px; margin: 24px auto; padding: 0 16px; }
-    .card { background: #fff; padding: 16px 20px; margin-bottom: 12px; border-radius: 8px; display: flex; justify-content: space-between; }
-    .preco { font-weight: bold; color: #0a7; }
+    body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; color: #222; }
+    header { background: #111; color: #fff; padding: 36px 20px; text-align: center; }
+    main { max-width: 960px; margin: 28px auto; padding: 0 16px; }
+    .vitrine { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+    .produto { background: #fff; border-radius: 10px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; }
+    .produto h3 { margin: 0 0 8px; font-size: 18px; }
+    .produto p { margin: 0 0 14px; color: #555; font-size: 14px; }
+    .preco { font-size: 20px; font-weight: bold; color: #0a7; margin-bottom: 14px; }
+    .btn { display: inline-block; text-align: center; background: #111; color: #fff; text-decoration: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; }
     footer { background: #222; color: #ccc; text-align: center; padding: 20px; margin-top: 40px; font-size: 14px; }
   </style>
 </head>
 <body>
   <header>
     <h1>Norte Studio Criativo</h1>
-    <p>Adesivos, sublimação e criação personalizada</p>
+    <p>Vitrine de adesivos, sublimação e criação personalizada</p>
   </header>
+
   <main>
-    <h2>Tabela de Preços</h2>
-    <div class="card">
-      <span>Adesivo em Vinil Sublimático (unidade / kit)</span>
-      <span class="preco">R$ 0,00</span>
-    </div>
-    <div class="card">
-      <span>Cartela de Adesivos Personalizados</span>
-      <span class="preco">R$ 0,00</span>
+    <h2>Produtos em Destaque</h2>
+    <div class="vitrine">
+      <div class="produto">
+        <div>
+          <h3>Adesivo em Vinil Sublimático</h3>
+          <p>Acabamento resistente para personalização e kits.</p>
+        </div>
+        <div>
+          <div class="preco">R$ 15,00</div>
+          <a class="btn" href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20quero%20encomendar%20Adesivo%20em%20Vinil%20Sublim%C3%A1tico" target="_blank">Pedir no WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="produto">
+        <div>
+          <h3>Cartela de Adesivos</h3>
+          <p>Arte personalizada pronta para aplicação e divulgação.</p>
+        </div>
+        <div>
+          <div class="preco">R$ 25,00</div>
+          <a class="btn" href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20quero%20encomendar%20Cartela%20de%20Adesivos" target="_blank">Pedir no WhatsApp</a>
+        </div>
+      </div>
     </div>
   </main>
+
   <footer>
     <p>Norte Studio Criativo — Todos os direitos reservados</p>
   </footer>
