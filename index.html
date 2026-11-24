@@ -108,14 +108,14 @@
     .resumo-linha { display: flex; justify-content: space-between; margin-bottom: 6px; }
     .resumo-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #0a7; margin-top: 8px; }
 
-    /* 3 botões de pagamento no final */
+    /* Botões de pagamento no final */
     .grupo-pagamentos { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
-    .btn-pag-infinitepay { width: 100%; background: #0a7; color: #fff; border: none; padding: 13px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
-    .btn-pag-infinitepay:hover { background: #085; }
+    .btn-pag-nuvemshop { width: 100%; background: #0033c6; color: #fff; border: none; padding: 13px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
+    .btn-pag-nuvemshop:hover { background: #00228a; }
     .btn-pag-mercadopago { width: 100%; background: #009ee3; color: #fff; border: none; padding: 13px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
     .btn-pag-mercadopago:hover { background: #007eb5; }
     .btn-pag-pix { width: 100%; background: #111827; color: #fff; border: none; padding: 13px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
-    .btn-pag-pix:hover { background: #0033c6; }
+    .btn-pag-pix:hover { background: #0a7; }
 
     .box-pix { display: none; background: #f0fdf4; border: 1px solid #16a34a; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 13.5px; color: #14532d; }
     .box-pix.ativo { display: block; }
@@ -340,7 +340,7 @@
   <footer>
     <p class="rodape-slide ativo">NOTCH5 STUDIO CRIATIVO — Todos os direitos reservados</p>
     <p class="rodape-slide">SUBLIMAÇÃO • PERSONALIZAÇÃO • ELÉTRICA • TURISMO</p>
-    <p class="rodape-slide">Pagamento via InfinitePay, Mercado Pago e Pix</p>
+    <p class="rodape-slide">Pagamento via Nuvemshop, Mercado Pago e Pix</p>
   </footer>
 
   <!-- Aba / Janela de Compra centralizada -->
@@ -396,9 +396,9 @@
           <div class="resumo-total"><span>Total:</span><span id="valor-total">R$ 0,00</span></div>
         </div>
 
-        <!-- As 3 opções de pagamento no final -->
+        <!-- Opções de pagamento no final -->
         <div class="grupo-pagamentos">
-          <button class="btn-pag-infinitepay" type="button" onclick="pagarComInfinitePay()">Pagar com InfinitePay</button>
+          <button class="btn-pag-nuvemshop" type="button" onclick="pagarNaNuvemshop()">Finalizar na Nuvemshop (Confirmação Automática)</button>
           <button class="btn-pag-mercadopago" type="button" onclick="pagarComMercadoPago()">Pagar com Mercado Pago</button>
           <button class="btn-pag-pix" type="button" onclick="pagarComPix()">Pagar com Pix</button>
         </div>
@@ -408,8 +408,7 @@
 
   <script>
     // Links e dados de pagamento
-    var INFINITEPAY_CHECKOUT_BASE = "https://checkout.infinitepay.io/";
-    var HANDLE_INFINITEPAY = ""; // Ex: "notch5"
+    var LINK_NUVEMSHOP_LOJA = "https://notch5.lojavirtualnuvem.com.br/";
     var LINK_MERCADO_PAGO = "https://link.mercadopago.com.br/andersonalvesdarocha";
     var CHAVE_PIX_LOJA = "11971416225";
     var NOME_RECEBEDOR_PIX = "Anderson Alves da Rocha";
@@ -702,24 +701,21 @@
       return pedidoAtual;
     }
 
-    function pagarComInfinitePay() {
+    function pagarNaNuvemshop() {
       var dados = validarPedidoAntesDePagar();
       if (!dados) return;
 
       var urlBase = window.location.href.split("?")[0];
-      var redirectUrl = urlBase + "?pagamento=infinitepay&pedido=" + encodeURIComponent(dados.numeroPedido);
+      var sep = LINK_NUVEMSHOP_LOJA.indexOf("?") === -1 ? "?" : "&";
+      var urlNuvem = LINK_NUVEMSHOP_LOJA + sep +
+        "pedido=" + encodeURIComponent(dados.numeroPedido) +
+        "&utm_source=vitrine_notch5&utm_medium=checkout";
 
-      var urlCheckout = INFINITEPAY_CHECKOUT_BASE +
-        "?order_nsu=" + encodeURIComponent(dados.numeroPedido) +
-        "&amount=" + Math.round(dados.total * 100) +
-        "&customer_name=" + encodeURIComponent(dados.nome) +
-        "&redirect_url=" + encodeURIComponent(redirectUrl);
+      var box = document.getElementById("box-retorno-pagamento");
+      box.textContent = "Abrindo sua loja na Nuvemshop (" + LINK_NUVEMSHOP_LOJA + ") para o pedido " + dados.numeroPedido + ".\nQuando o pagamento for aprovado lá, o sistema confirma automaticamente.";
+      box.style.display = "block";
 
-      if (HANDLE_INFINITEPAY) {
-        urlCheckout += "&handle=" + encodeURIComponent(HANDLE_INFINITEPAY);
-      }
-
-      window.open(urlCheckout, "_blank", "noopener,noreferrer");
+      window.open(urlNuvem, "_blank", "noopener,noreferrer");
     }
 
     function pagarComMercadoPago() {
