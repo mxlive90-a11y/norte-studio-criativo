@@ -107,9 +107,20 @@
     .resumo-valores { border-top: 1px solid #ddd; margin-top: 14px; padding-top: 12px; font-size: 15px; }
     .resumo-linha { display: flex; justify-content: space-between; margin-bottom: 6px; }
     .resumo-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #0a7; margin-top: 8px; }
-    .btn-finalizar { width: 100%; background: #0a7; color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 14px; }
-    .btn-finalizar:hover { background: #085; }
-    .aviso-pagamento { font-size: 12.5px; color: #4b5563; margin-top: 8px; line-height: 1.4; }
+
+    /* 3 botões de pagamento no final */
+    .grupo-pagamentos { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+    .btn-pag-infinitepay { width: 100%; background: #0a7; color: #fff; border: none; padding: 13px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
+    .btn-pag-infinitepay:hover { background: #085; }
+    .btn-pag-mercadopago { width: 100%; background: #009ee3; color: #fff; border: none; padding: 13px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
+    .btn-pag-mercadopago:hover { background: #007eb5; }
+    .btn-pag-pix { width: 100%; background: #111827; color: #fff; border: none; padding: 13px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
+    .btn-pag-pix:hover { background: #0033c6; }
+
+    .box-pix { display: none; background: #f0fdf4; border: 1px solid #16a34a; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 13.5px; color: #14532d; }
+    .box-pix.ativo { display: block; }
+    .codigo-pix-box { background: #fff; border: 1px dashed #16a34a; border-radius: 6px; padding: 8px; margin: 8px 0; font-family: monospace; font-size: 12.5px; word-break: break-all; color: #111; }
+    .btn-copiar-pix { background: #16a34a; color: #fff; border: none; border-radius: 6px; padding: 8px 12px; font-weight: bold; font-size: 13px; cursor: pointer; width: 100%; }
     .box-retorno { background: #ecfdf5; border: 1px solid #10b981; color: #065f46; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 13.5px; line-height: 1.5; white-space: pre-line; }
   </style>
 </head>
@@ -327,7 +338,7 @@
   <footer>
     <p class="rodape-slide ativo">NOTCH5 STUDIO CRIATIVO — Todos os direitos reservados</p>
     <p class="rodape-slide">SUBLIMAÇÃO • PERSONALIZAÇÃO • ELÉTRICA • TURISMO</p>
-    <p class="rodape-slide">Pagamento via InfinitePay com confirmação automática</p>
+    <p class="rodape-slide">Pagamento via InfinitePay, Mercado Pago e Pix</p>
   </footer>
 
   <!-- Aba / Janela de Compra centralizada -->
@@ -364,6 +375,13 @@
           </div>
         </div>
 
+        <div class="box-pix" id="box-pix-pagamento">
+          <strong>Pagamento via Pix</strong>
+          <div id="info-pix-valor"></div>
+          <div class="codigo-pix-box" id="codigo-pix-copia-cola"></div>
+          <button class="btn-copiar-pix" type="button" onclick="copiarPix()">Copiar Chave / Código Pix</button>
+        </div>
+
         <div class="box-retorno" id="box-retorno-pagamento" style="display:none;"></div>
       </div>
 
@@ -373,18 +391,24 @@
           <div class="resumo-linha"><span>Entrega:</span><span id="valor-frete">Grátis</span></div>
           <div class="resumo-total"><span>Total:</span><span id="valor-total">R$ 0,00</span></div>
         </div>
-        <button class="btn-finalizar" id="btn-finalizar-compra" type="button" onclick="finalizarPedido()">Pagar com InfinitePay</button>
-        <div class="aviso-pagamento">
-          Ao clicar em pagar, você vai para o checkout da InfinitePay com o valor do seu carrinho e volta para cá após concluir.
+
+        <!-- As 3 opções de pagamento no final -->
+        <div class="grupo-pagamentos">
+          <button class="btn-pag-infinitepay" type="button" onclick="pagarComInfinitePay()">Pagar com InfinitePay</button>
+          <button class="btn-pag-mercadopago" type="button" onclick="pagarComMercadoPago()">Pagar com Mercado Pago</button>
+          <button class="btn-pag-pix" type="button" onclick="pagarComPix()">Pagar com Pix</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Link base da InfinitePay (se não houver link dinâmico configurado, abre o checkout da InfinitePay)
+    // Links e dados de pagamento
     var INFINITEPAY_CHECKOUT_BASE = "https://checkout.infinitepay.io/";
-    var HANDLE_INFINITEPAY = ""; // Coloque aqui o seu identificador/handle da InfinitePay se quiser usar link direto (ex: "notch5")
+    var HANDLE_INFINITEPAY = ""; // Ex: "notch5"
+    var LINK_MERCADO_PAGO = "https://link.mercadopago.com.br/andersonalvesdarocha";
+    var CHAVE_PIX_LOJA = "11971416225";
+    var NOME_RECEBEDOR_PIX = "Anderson Alves da Rocha";
 
     var slideAtual = 0;
     var trilho = document.getElementById("slider-trilho");
@@ -635,34 +659,16 @@
       document.getElementById("overlay-carrinho").classList.remove("ativo");
     }
 
-    function verificarRetornoPagamento() {
-      var params = new URLSearchParams(window.location.search);
-      var retorno = params.get("pagamento");
-      var pedido = params.get("pedido") || "";
-      var recibo = params.get("receipt_url") || params.get("recibo") || "";
-      var box = document.getElementById("box-retorno-pagamento");
-
-      if (retorno || recibo || pedido) {
-        var texto = "Retorno de pagamento recebido.";
-        if (pedido) texto += "\nPedido: " + pedido;
-        if (recibo) texto += "\nComprovante: " + recibo;
-        box.textContent = texto;
-        box.style.display = "block";
-        abrirCarrinho();
-      }
-    }
-
-    function finalizarPedido() {
+    function validarPedidoAntesDePagar() {
       if (carrinho.length === 0) {
         alert("Adicione pelo menos um produto no carrinho.");
-        return;
+        return null;
       }
       var nome = document.getElementById("nome-cliente").value.trim();
       if (!nome) {
-        alert("Digite seu nome para finalizar.");
-        return;
+        alert("Digite seu nome para continuar.");
+        return null;
       }
-
       var subtotal = carrinho.reduce(function(acc, item) { return acc + item.preco * item.qtd; }, 0);
       var entrega = document.getElementById("tipo-entrega").value;
       var freteAtual = entrega === "Retirada no local" ? 0 : freteCalculado;
@@ -670,26 +676,89 @@
 
       if (total <= 0) {
         alert("O valor total do pedido está R$ 0,00. Defina um valor no produto antes de pagar.");
-        return;
+        return null;
       }
 
-      var numeroPedido = "N5-" + String(Date.now()).slice(-5);
+      return {
+        nome: nome,
+        total: total,
+        numeroPedido: "N5-" + String(Date.now()).slice(-5)
+      };
+    }
+
+    function pagarComInfinitePay() {
+      var dados = validarPedidoAntesDePagar();
+      if (!dados) return;
+
       var urlBase = window.location.href.split("?")[0];
-      var redirectUrl = urlBase + "?pagamento=concluido&pedido=" + encodeURIComponent(numeroPedido);
+      var redirectUrl = urlBase + "?pagamento=infinitepay&pedido=" + encodeURIComponent(dados.numeroPedido);
 
       var urlCheckout = INFINITEPAY_CHECKOUT_BASE +
-        "?order_nsu=" + encodeURIComponent(numeroPedido) +
-        "&amount=" + Math.round(total * 100) +
-        "&customer_name=" + encodeURIComponent(nome) +
+        "?order_nsu=" + encodeURIComponent(dados.numeroPedido) +
+        "&amount=" + Math.round(dados.total * 100) +
+        "&customer_name=" + encodeURIComponent(dados.nome) +
         "&redirect_url=" + encodeURIComponent(redirectUrl);
 
       if (HANDLE_INFINITEPAY) {
         urlCheckout += "&handle=" + encodeURIComponent(HANDLE_INFINITEPAY);
       }
 
-      carrinho = [];
-      atualizarResumo();
-      window.location.href = urlCheckout;
+      window.open(urlCheckout, "_blank", "noopener,noreferrer");
+    }
+
+    function pagarComMercadoPago() {
+      var dados = validarPedidoAntesDePagar();
+      if (!dados) return;
+
+      var urlBase = window.location.href.split("?")[0];
+      var sep = LINK_MERCADO_PAGO.indexOf("?") === -1 ? "?" : "&";
+      var urlMp = LINK_MERCADO_PAGO + sep +
+        "pedido=" + encodeURIComponent(dados.numeroPedido) +
+        "&back_url=" + encodeURIComponent(urlBase + "?pagamento=mercadopago&pedido=" + encodeURIComponent(dados.numeroPedido));
+
+      window.open(urlMp, "_blank", "noopener,noreferrer");
+    }
+
+    function pagarComPix() {
+      var dados = validarPedidoAntesDePagar();
+      if (!dados) return;
+
+      var boxPix = document.getElementById("box-pix-pagamento");
+      document.getElementById("info-pix-valor").textContent =
+        "Pedido " + dados.numeroPedido + " — Valor: " + formatarReal(dados.total) + " (" + NOME_RECEBEDOR_PIX + ")";
+      document.getElementById("codigo-pix-copia-cola").textContent =
+        CHAVE_PIX_LOJA || "Chave Pix ainda não configurada";
+      boxPix.classList.add("ativo");
+      boxPix.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function copiarPix() {
+      var codigo = document.getElementById("codigo-pix-copia-cola").textContent.trim();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(codigo).then(function() {
+          alert("Chave / Código Pix copiado!");
+        }).catch(function() {
+          alert("Chave Pix: " + codigo);
+        });
+      } else {
+        alert("Chave Pix: " + codigo);
+      }
+    }
+
+    function verificarRetornoPagamento() {
+      var params = new URLSearchParams(window.location.search);
+      var retorno = params.get("pagamento");
+      var pedido = params.get("pedido") || "";
+      var box = document.getElementById("box-retorno-pagamento");
+
+      if (retorno || pedido) {
+        var texto = "Retorno de pagamento recebido.";
+        if (retorno) texto += "\nMeio: " + retorno;
+        if (pedido) texto += "\nPedido: " + pedido;
+        box.textContent = texto;
+        box.style.display = "block";
+        abrirCarrinho();
+      }
     }
 
     verificarRetornoPagamento();
