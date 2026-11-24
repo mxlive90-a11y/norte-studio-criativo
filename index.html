@@ -120,7 +120,9 @@
     .box-pix { display: none; background: #f0fdf4; border: 1px solid #16a34a; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 13.5px; color: #14532d; }
     .box-pix.ativo { display: block; }
     .codigo-pix-box { background: #fff; border: 1px dashed #16a34a; border-radius: 6px; padding: 8px; margin: 8px 0; font-family: monospace; font-size: 12.5px; word-break: break-all; color: #111; }
-    .btn-copiar-pix { background: #16a34a; color: #fff; border: none; border-radius: 6px; padding: 8px 12px; font-weight: bold; font-size: 13px; cursor: pointer; width: 100%; }
+    .btn-copiar-pix { background: #16a34a; color: #fff; border: none; border-radius: 6px; padding: 8px 12px; font-weight: bold; font-size: 13px; cursor: pointer; width: 100%; margin-bottom: 8px; }
+    .btn-avisar-pix { background: #0a7; color: #fff; border: none; border-radius: 6px; padding: 9px 12px; font-weight: bold; font-size: 13px; cursor: pointer; width: 100%; }
+    .aviso-pix-nota { font-size: 12px; color: #166534; margin-top: 8px; line-height: 1.4; }
     .box-retorno { background: #ecfdf5; border: 1px solid #10b981; color: #065f46; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 13.5px; line-height: 1.5; white-space: pre-line; }
   </style>
 </head>
@@ -380,6 +382,8 @@
           <div id="info-pix-valor"></div>
           <div class="codigo-pix-box" id="codigo-pix-copia-cola"></div>
           <button class="btn-copiar-pix" type="button" onclick="copiarPix()">Copiar Chave / Código Pix</button>
+          <button class="btn-avisar-pix" type="button" onclick="enviarPedidoPix()">Já fiz o Pix — Enviar Pedido</button>
+          <div class="aviso-pix-nota">Após o cliente pagar no banco dele, você confere o recebimento no seu app/extrato.</div>
         </div>
 
         <div class="box-retorno" id="box-retorno-pagamento" style="display:none;"></div>
@@ -409,6 +413,7 @@
     var LINK_MERCADO_PAGO = "https://link.mercadopago.com.br/andersonalvesdarocha";
     var CHAVE_PIX_LOJA = "11971416225";
     var NOME_RECEBEDOR_PIX = "Anderson Alves da Rocha";
+    var WHATSAPP_LOJA = ""; // Opcional: coloque seu numero com DDD, ex: "5511999999999"
 
     var slideAtual = 0;
     var trilho = document.getElementById("slider-trilho");
@@ -561,6 +566,7 @@
     }
 
     var carrinho = [];
+    var pedidoAtual = null;
 
     function formatarReal(valor) {
       return "R$ " + valor.toFixed(2).replace(".", ",");
@@ -679,11 +685,21 @@
         return null;
       }
 
-      return {
+      pedidoAtual = {
         nome: nome,
+        whats: document.getElementById("whats-cliente").value.trim(),
+        cep: document.getElementById("cep-cliente").value.trim(),
+        endereco: document.getElementById("endereco-cliente").value.trim(),
+        detalhes: document.getElementById("detalhes-cliente").value.trim(),
+        entrega: entrega,
+        frete: freteAtual,
+        subtotal: subtotal,
         total: total,
+        itens: carrinho.map(function(i) { return i.qtd + "x " + i.nome + " (" + formatarReal(i.preco * i.qtd) + ")"; }).join(", "),
         numeroPedido: "N5-" + String(Date.now()).slice(-5)
       };
+
+      return pedidoAtual;
     }
 
     function pagarComInfinitePay() {
@@ -742,6 +758,32 @@
         });
       } else {
         alert("Chave Pix: " + codigo);
+      }
+    }
+
+    function enviarPedidoPix() {
+      var dados = pedidoAtual || validarPedidoAntesDePagar();
+      if (!dados) return;
+
+      var resumo =
+        "Pedido: " + dados.numeroPedido +
+        "\nPagamento: Pix (aguardando conferência no banco)" +
+        "\nCliente: " + dados.nome +
+        (dados.whats ? "\nWhatsApp: " + dados.whats : "") +
+        "\nItens: " + dados.itens +
+        "\nEntrega: " + dados.entrega + " (" + formatarReal(dados.frete) + ")" +
+        (dados.cep ? "\nCEP: " + dados.cep : "") +
+        (dados.endereco ? "\nEndereço: " + dados.endereco : "") +
+        "\nTotal: " + formatarReal(dados.total) +
+        (dados.detalhes ? "\nDetalhes: " + dados.detalhes : "");
+
+      var box = document.getElementById("box-retorno-pagamento");
+      box.textContent = "Dados do pedido registrados na tela para conferência:\n" + resumo;
+      box.style.display = "block";
+
+      if (WHATSAPP_LOJA) {
+        var numeroLimpo = WHATSAPP_LOJA.replace(/\D/g, "");
+        window.open("https://wa.me/" + numeroLimpo + "?text=" + encodeURIComponent(resumo), "_blank", "noopener,noreferrer");
       }
     }
 
