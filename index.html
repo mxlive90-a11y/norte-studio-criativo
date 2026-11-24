@@ -110,8 +110,6 @@
 
     /* Botões de pagamento no final */
     .grupo-pagamentos { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
-    .btn-pag-nuvemshop { width: 100%; background: #0033c6; color: #fff; border: none; padding: 13px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
-    .btn-pag-nuvemshop:hover { background: #00228a; }
     .btn-pag-mercadopago { width: 100%; background: #009ee3; color: #fff; border: none; padding: 13px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
     .btn-pag-mercadopago:hover { background: #007eb5; }
     .btn-pag-pix { width: 100%; background: #111827; color: #fff; border: none; padding: 13px; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
@@ -340,7 +338,7 @@
   <footer>
     <p class="rodape-slide ativo">NOTCH5 STUDIO CRIATIVO — Todos os direitos reservados</p>
     <p class="rodape-slide">SUBLIMAÇÃO • PERSONALIZAÇÃO • ELÉTRICA • TURISMO</p>
-    <p class="rodape-slide">Pagamento via Nuvemshop, Mercado Pago e Pix</p>
+    <p class="rodape-slide">Pagamento via Mercado Pago e Pix</p>
   </footer>
 
   <!-- Aba / Janela de Compra centralizada -->
@@ -396,9 +394,8 @@
           <div class="resumo-total"><span>Total:</span><span id="valor-total">R$ 0,00</span></div>
         </div>
 
-        <!-- Opções de pagamento no final -->
+        <!-- Opções de pagamento direto na vitrine -->
         <div class="grupo-pagamentos">
-          <button class="btn-pag-nuvemshop" type="button" onclick="pagarNaNuvemshop()">Finalizar na Nuvemshop (Confirmação Automática)</button>
           <button class="btn-pag-mercadopago" type="button" onclick="pagarComMercadoPago()">Pagar com Mercado Pago</button>
           <button class="btn-pag-pix" type="button" onclick="pagarComPix()">Pagar com Pix</button>
         </div>
@@ -408,7 +405,6 @@
 
   <script>
     // Links e dados de pagamento
-    var LINK_NUVEMSHOP_LOJA = "https://notch5.lojavirtualnuvem.com.br/";
     var LINK_MERCADO_PAGO = "https://link.mercadopago.com.br/andersonalvesdarocha";
     var CHAVE_PIX_LOJA = "11971416225";
     var NOME_RECEBEDOR_PIX = "Anderson Alves da Rocha";
@@ -699,23 +695,6 @@
       };
 
       return pedidoAtual;
-    }
-
-    function pagarNaNuvemshop() {
-      var dados = validarPedidoAntesDePagar();
-      if (!dados) return;
-
-      var urlBase = window.location.href.split("?")[0];
-      var sep = LINK_NUVEMSHOP_LOJA.indexOf("?") === -1 ? "?" : "&";
-      var urlNuvem = LINK_NUVEMSHOP_LOJA + sep +
-        "pedido=" + encodeURIComponent(dados.numeroPedido) +
-        "&utm_source=vitrine_notch5&utm_medium=checkout";
-
-      var box = document.getElementById("box-retorno-pagamento");
-      box.textContent = "Abrindo sua loja na Nuvemshop (" + LINK_NUVEMSHOP_LOJA + ") para o pedido " + dados.numeroPedido + ".\nQuando o pagamento for aprovado lá, o sistema confirma automaticamente.";
-      box.style.display = "block";
-
-      window.open(urlNuvem, "_blank", "noopener,noreferrer");
     }
 
     function pagarComMercadoPago() {
