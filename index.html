@@ -109,23 +109,8 @@
     .resumo-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #0a7; margin-top: 8px; }
     .btn-finalizar { width: 100%; background: #0a7; color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 14px; }
     .btn-finalizar:hover { background: #085; }
-    .btn-finalizar:disabled { background: #6b7280; cursor: not-allowed; }
-
-    /* Comprovante e Pagamento dentro do próprio site */
-    .comprovante-box { display: none; background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 14px; margin-top: 14px; }
-    .comprovante-box.ativo { display: block; }
-    .comprovante-box h3 { margin: 0 0 8px; color: #065f46; font-size: 16px; }
-    .comprovante-texto { white-space: pre-line; font-size: 13px; color: #1f2937; background: #fff; border: 1px solid #d1fae5; border-radius: 6px; padding: 10px; margin-bottom: 10px; }
-    .status-envio-email { font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #065f46; }
-    .pagamento-instrucoes { background: #fff; border: 1px solid #a7f3d0; border-radius: 6px; padding: 10px; margin-bottom: 10px; font-size: 13px; color: #1f2937; line-height: 1.5; }
-    .pagamento-instrucoes strong { color: #065f46; }
-    .btn-infinitepay { display: block; width: 100%; box-sizing: border-box; text-align: center; text-decoration: none; background: #0033c6; color: #fff; border: none; padding: 11px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 8px; }
-    .btn-infinitepay:hover { background: #00248f; }
-    .btn-pix { width: 100%; background: #0a7; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 8px; }
-    .btn-pix:hover { background: #085; }
-    .btn-copiar { width: 100%; background: #111; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 8px; }
-    .btn-copiar:hover { background: #0033c6; }
-    .btn-novo-pedido { width: 100%; background: #e5e7eb; color: #111; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; }
+    .aviso-pagamento { font-size: 12.5px; color: #4b5563; margin-top: 8px; line-height: 1.4; }
+    .box-retorno { background: #ecfdf5; border: 1px solid #10b981; color: #065f46; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 13.5px; line-height: 1.5; white-space: pre-line; }
   </style>
 </head>
 <body>
@@ -342,7 +327,7 @@
   <footer>
     <p class="rodape-slide ativo">NOTCH5 STUDIO CRIATIVO — Todos os direitos reservados</p>
     <p class="rodape-slide">SUBLIMAÇÃO • PERSONALIZAÇÃO • ELÉTRICA • TURISMO</p>
-    <p class="rodape-slide">Pedido direto no site e confirmação por e-mail</p>
+    <p class="rodape-slide">Pagamento via InfinitePay com confirmação automática</p>
   </footer>
 
   <!-- Aba / Janela de Compra centralizada -->
@@ -377,34 +362,9 @@
             <input class="campo" type="tel" id="whats-cliente" placeholder="Seu WhatsApp com DDD">
             <textarea class="campo" id="detalhes-cliente" placeholder="Detalhes do pedido (medida, arte/adesivo, cor, quantidade ou observação)"></textarea>
           </div>
-
-          <div class="bloco-checkout">
-            <h3>3. Forma de Pagamento</h3>
-            <select class="campo" id="forma-pagamento">
-              <option value="Pix (Chave 39618542890)">Pix (Chave: 39618542890)</option>
-              <option value="InfinitePay — Link de Pagamento (https://linknabio.gg/notch5)">InfinitePay — Link de Pagamento</option>
-            </select>
-          </div>
         </div>
 
-        <div class="comprovante-box" id="comprovante-pedido">
-          <h3>Pedido Registrado no Site</h3>
-          <div class="status-envio-email" id="status-envio-email"></div>
-
-          <div class="pagamento-instrucoes">
-            <strong>Pagamento via Pix:</strong><br>
-            Chave Pix: <strong>39618542890</strong><br>
-            Favorecido: <strong>Anderson Alves da Rocha</strong><br><br>
-            <strong>Pagamento via InfinitePay:</strong><br>
-            Abra o link para escolher o valor e pagar.
-          </div>
-
-          <a class="btn-infinitepay" href="https://linknabio.gg/notch5" target="_blank" rel="noopener noreferrer">Abrir Link InfinitePay</a>
-          <button class="btn-pix" type="button" onclick="copiarChavePix()">Copiar Chave Pix (39618542890)</button>
-          <div class="comprovante-texto" id="comprovante-texto"></div>
-          <button class="btn-copiar" type="button" onclick="copiarComprovante()">Copiar Resumo do Pedido</button>
-          <button class="btn-novo-pedido" type="button" onclick="iniciarNovoPedido()">Fazer Novo Pedido</button>
-        </div>
+        <div class="box-retorno" id="box-retorno-pagamento" style="display:none;"></div>
       </div>
 
       <div id="rodape-checkout">
@@ -413,16 +373,18 @@
           <div class="resumo-linha"><span>Entrega:</span><span id="valor-frete">Grátis</span></div>
           <div class="resumo-total"><span>Total:</span><span id="valor-total">R$ 0,00</span></div>
         </div>
-        <button class="btn-finalizar" id="btn-finalizar-compra" type="button" onclick="finalizarPedido()">Finalizar Compra</button>
+        <button class="btn-finalizar" id="btn-finalizar-compra" type="button" onclick="finalizarPedido()">Pagar com InfinitePay</button>
+        <div class="aviso-pagamento">
+          Ao clicar em pagar, você vai para o checkout da InfinitePay com o valor do seu carrinho e volta para cá após concluir.
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    var FORMSPREE_URL = "https://formspree.io/f/mqpqgbyy";
-    var CHAVE_PIX_NOTCH5 = "39618542890";
-    var TITULAR_PIX_NOTCH5 = "Anderson Alves da Rocha";
-    var LINK_INFINITEPAY_NOTCH5 = "https://linknabio.gg/notch5";
+    // Link base da InfinitePay (se não houver link dinâmico configurado, abre o checkout da InfinitePay)
+    var INFINITEPAY_CHECKOUT_BASE = "https://checkout.infinitepay.io/";
+    var HANDLE_INFINITEPAY = ""; // Coloque aqui o seu identificador/handle da InfinitePay se quiser usar link direto (ex: "notch5")
 
     var slideAtual = 0;
     var trilho = document.getElementById("slider-trilho");
@@ -582,10 +544,6 @@
 
     function adicionarAoCarrinho(nome, preco) {
       document.getElementById("titulo-aba-compra").textContent = "Comprar — " + nome;
-      document.getElementById("formulario-checkout").style.display = "block";
-      document.getElementById("rodape-checkout").style.display = "block";
-      document.getElementById("comprovante-pedido").classList.remove("ativo");
-
       var existente = carrinho.find(function(item) { return item.nome === nome; });
       if (existente) {
         existente.qtd += 1;
@@ -677,20 +635,21 @@
       document.getElementById("overlay-carrinho").classList.remove("ativo");
     }
 
-    function enviarPedidoParaFormspree(payload) {
-      return fetch(FORMSPREE_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify(payload)
-      }).then(function(resposta) {
-        if (!resposta.ok) {
-          throw new Error("Falha no envio ao Formspree");
-        }
-        return resposta.json();
-      });
+    function verificarRetornoPagamento() {
+      var params = new URLSearchParams(window.location.search);
+      var retorno = params.get("pagamento");
+      var pedido = params.get("pedido") || "";
+      var recibo = params.get("receipt_url") || params.get("recibo") || "";
+      var box = document.getElementById("box-retorno-pagamento");
+
+      if (retorno || recibo || pedido) {
+        var texto = "Retorno de pagamento recebido.";
+        if (pedido) texto += "\nPedido: " + pedido;
+        if (recibo) texto += "\nComprovante: " + recibo;
+        box.textContent = texto;
+        box.style.display = "block";
+        abrirCarrinho();
+      }
     }
 
     function finalizarPedido() {
@@ -699,132 +658,41 @@
         return;
       }
       var nome = document.getElementById("nome-cliente").value.trim();
-      var whatsCliente = document.getElementById("whats-cliente").value.trim();
-      var detalhesCliente = document.getElementById("detalhes-cliente").value.trim();
-      var entrega = document.getElementById("tipo-entrega").value;
-      var cep = document.getElementById("cep-cliente").value.trim();
-      var endereco = document.getElementById("endereco-cliente").value.trim();
-      var pagamento = document.getElementById("forma-pagamento").value;
-
       if (!nome) {
         alert("Digite seu nome para finalizar.");
         return;
       }
 
-      var botaoFinalizar = document.getElementById("btn-finalizar-compra");
-      botaoFinalizar.disabled = true;
-      botaoFinalizar.textContent = "Enviando pedido...";
-
-      var numeroPedido = "N5-" + String(Date.now()).slice(-5);
-      var linhasProdutos = carrinho.map(function(item) {
-        return "- " + item.qtd + "x " + item.nome + " (" + formatarReal(item.preco * item.qtd) + ")";
-      }).join("\n");
-
       var subtotal = carrinho.reduce(function(acc, item) { return acc + item.preco * item.qtd; }, 0);
+      var entrega = document.getElementById("tipo-entrega").value;
       var freteAtual = entrega === "Retirada no local" ? 0 : freteCalculado;
       var total = subtotal + freteAtual;
-      var freteTexto = entrega === "Retirada no local" ? "Grátis" : formatarReal(freteAtual);
 
-      var resumo =
-        "Pedido: " + numeroPedido + "\n" +
-        "Cliente: " + nome + (whatsCliente ? " | WhatsApp: " + whatsCliente : "") + "\n\n" +
-        "Itens:\n" + linhasProdutos + "\n" +
-        (detalhesCliente ? "Detalhes: " + detalhesCliente + "\n" : "") + "\n" +
-        "Subtotal: " + formatarReal(subtotal) + "\n" +
-        "Entrega (" + entrega + "): " + freteTexto + "\n" +
-        "Total: " + formatarReal(total) + "\n" +
-        "Prazo estimado: " + prazoEstimadoTexto + "\n" +
-        (cep ? "CEP: " + cep + "\n" : "") +
-        (endereco ? "Endereço: " + endereco + "\n" : "") +
-        "Pagamento: " + pagamento + "\n" +
-        "Pix: " + CHAVE_PIX_NOTCH5 + " (" + TITULAR_PIX_NOTCH5 + ")\n" +
-        "InfinitePay: " + LINK_INFINITEPAY_NOTCH5;
-
-      try {
-        var historico = JSON.parse(localStorage.getItem("notch5_pedidos") || "[]");
-        historico.unshift({
-          numero: numeroPedido,
-          data: new Date().toLocaleString("pt-BR"),
-          resumo: resumo
-        });
-        localStorage.setItem("notch5_pedidos", JSON.stringify(historico));
-      } catch (e) {}
-
-      var payloadFormspree = {
-        _subject: "Novo pedido " + numeroPedido + " — NOTCH5 STUDIO CRIATIVO",
-        pedido: numeroPedido,
-        cliente: nome,
-        whatsapp: whatsCliente || "Não informado",
-        detalhes: detalhesCliente || "Não informado",
-        itens: linhasProdutos,
-        subtotal: formatarReal(subtotal),
-        tipo_entrega: entrega,
-        frete: freteTexto,
-        total: formatarReal(total),
-        prazo_estimado: prazoEstimadoTexto,
-        cep: cep || "Não informado",
-        endereco: endereco || "Não informado",
-        pagamento: pagamento,
-        chave_pix: CHAVE_PIX_NOTCH5 + " (" + TITULAR_PIX_NOTCH5 + ")",
-        link_infinitepay: LINK_INFINITEPAY_NOTCH5,
-        resumo_completo: resumo
-      };
-
-      enviarPedidoParaFormspree(payloadFormspree)
-        .then(function() {
-          document.getElementById("status-envio-email").textContent = "Pedido enviado para o seu e-mail via Formspree!";
-        })
-        .catch(function() {
-          document.getElementById("status-envio-email").textContent = "Pedido salvo no site. Se não chegou no e-mail, confira a conexão ou copie o resumo abaixo.";
-        })
-        .finally(function() {
-          botaoFinalizar.disabled = false;
-          botaoFinalizar.textContent = "Finalizar Compra";
-
-          document.getElementById("titulo-aba-compra").textContent = "Resumo e Pagamento";
-          document.getElementById("comprovante-texto").textContent = resumo;
-          document.getElementById("formulario-checkout").style.display = "none";
-          document.getElementById("rodape-checkout").style.display = "none";
-          document.getElementById("comprovante-pedido").classList.add("ativo");
-
-          carrinho = [];
-          atualizarResumo();
-        });
-    }
-
-    function copiarChavePix() {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(CHAVE_PIX_NOTCH5).then(function() {
-          alert("Chave Pix (" + CHAVE_PIX_NOTCH5 + ") copiada!");
-        }).catch(function() {
-          alert("Chave Pix: " + CHAVE_PIX_NOTCH5);
-        });
-      } else {
-        alert("Chave Pix: " + CHAVE_PIX_NOTCH5);
+      if (total <= 0) {
+        alert("O valor total do pedido está R$ 0,00. Defina um valor no produto antes de pagar.");
+        return;
       }
-    }
 
-    function copiarComprovante() {
-      var texto = document.getElementById("comprovante-texto").textContent;
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(texto).then(function() {
-          alert("Resumo do pedido copiado!");
-        }).catch(function() {
-          alert("Selecione o texto do resumo e copie manualmente.");
-        });
-      } else {
-        alert("Selecione o texto do resumo e copie manualmente.");
+      var numeroPedido = "N5-" + String(Date.now()).slice(-5);
+      var urlBase = window.location.href.split("?")[0];
+      var redirectUrl = urlBase + "?pagamento=concluido&pedido=" + encodeURIComponent(numeroPedido);
+
+      var urlCheckout = INFINITEPAY_CHECKOUT_BASE +
+        "?order_nsu=" + encodeURIComponent(numeroPedido) +
+        "&amount=" + Math.round(total * 100) +
+        "&customer_name=" + encodeURIComponent(nome) +
+        "&redirect_url=" + encodeURIComponent(redirectUrl);
+
+      if (HANDLE_INFINITEPAY) {
+        urlCheckout += "&handle=" + encodeURIComponent(HANDLE_INFINITEPAY);
       }
-    }
 
-    function iniciarNovoPedido() {
-      document.getElementById("titulo-aba-compra").textContent = "Comprar";
-      document.getElementById("detalhes-cliente").value = "";
-      document.getElementById("comprovante-pedido").classList.remove("ativo");
-      document.getElementById("formulario-checkout").style.display = "block";
-      document.getElementById("rodape-checkout").style.display = "block";
+      carrinho = [];
       atualizarResumo();
+      window.location.href = urlCheckout;
     }
+
+    verificarRetornoPagamento();
   </script>
 </body>
 </html>
