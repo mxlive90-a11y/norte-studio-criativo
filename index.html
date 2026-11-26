@@ -100,7 +100,6 @@
     .bloco-checkout { background: #f8f8f8; border: 1px solid #e2e2e2; border-radius: 8px; padding: 14px; margin-top: 14px; }
     .bloco-checkout h3 { margin: 0 0 10px; font-size: 15px; }
     .campo { width: 100%; padding: 9px 10px; margin-bottom: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; font-family: Arial, sans-serif; }
-    textarea.campo { resize: vertical; min-height: 76px; margin-bottom: 0; }
     .anexo-checkout-box { margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1; }
     .anexo-checkout-box label { display: block; font-weight: bold; font-size: 14px; color: #111; margin-bottom: 4px; }
     .anexo-checkout-box p { font-size: 12.5px; color: #555; margin: 0 0 8px 0; line-height: 1.4; }
@@ -276,14 +275,13 @@
           </div>
 
           <div class="bloco-checkout">
-            <h3>2. Seus Dados e Detalhes</h3>
+            <h3>2. Seus Dados e Arte</h3>
             <input class="campo" type="text" id="nome-cliente" placeholder="Seu nome completo">
             <input class="campo" type="tel" id="whats-cliente" placeholder="Seu WhatsApp com DDD">
-            <textarea class="campo" id="detalhes-cliente" placeholder="Detalhes do pedido (medida, arte/adesivo, metragem/bitola, cor, quantidade ou observação)"></textarea>
 
             <div class="anexo-checkout-box">
               <label for="anexo-arte-checkout">Anexar foto ou arte:</label>
-              <p>Envie aqui a imagem, logo ou modelo que você quer usar no seu pedido para nossa equipe montar a sua arte.</p>
+              <p>Envie aqui a imagem ou logo do seu pedido. Ajustamos o tamanho e a montagem para produção.</p>
               <input type="file" id="anexo-arte-checkout" accept="image/*,.pdf" onchange="selecionarArteCheckout(this)">
               <div class="status-anexo-checkout" id="status-anexo-checkout"></div>
             </div>
@@ -533,7 +531,6 @@
       formData.append("cep", dados.cep);
       formData.append("endereco", dados.endereco);
       formData.append("total", formatarReal(dados.total));
-      formData.append("detalhes", dados.detalhes);
 
       if (arteCheckoutArquivo) {
         formData.append("anexo_arte_pedido", arteCheckoutArquivo, arteCheckoutArquivo.name);
@@ -822,7 +819,6 @@
         whats: document.getElementById("whats-cliente").value.trim(),
         cep: document.getElementById("cep-cliente").value.trim(),
         endereco: document.getElementById("endereco-cliente").value.trim(),
-        detalhes: document.getElementById("detalhes-cliente").value.trim(),
         entrega: entrega,
         frete: freteAtual,
         subtotal: subtotal,
@@ -902,8 +898,7 @@
         "\nEntrega: " + dados.entrega + " (" + formatarReal(dados.frete) + ")" +
         (dados.cep ? "\nCEP: " + dados.cep : "") +
         (dados.endereco ? "\nEndereço: " + dados.endereco : "") +
-        "\nTotal: " + formatarReal(dados.total) +
-        (dados.detalhes ? "\nDetalhes: " + dados.detalhes : "");
+        "\nTotal: " + formatarReal(dados.total);
 
       var box = document.getElementById("box-retorno-pagamento");
       box.textContent = "Dados do pedido registrados na tela para conferência:\n" + resumo;
