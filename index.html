@@ -100,7 +100,8 @@
     .bloco-checkout { background: #f8f8f8; border: 1px solid #e2e2e2; border-radius: 8px; padding: 14px; margin-top: 14px; }
     .bloco-checkout h3 { margin: 0 0 10px; font-size: 15px; }
     .campo { width: 100%; padding: 9px 10px; margin-bottom: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; font-family: Arial, sans-serif; }
-    .anexo-checkout-box { margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1; }
+    .anexo-checkout-box { display: none; margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1; }
+    .anexo-checkout-box.visivel { display: block; }
     .anexo-checkout-box label { display: block; font-weight: bold; font-size: 14px; color: #111; margin-bottom: 4px; }
     .anexo-checkout-box p { font-size: 12.5px; color: #555; margin: 0 0 8px 0; line-height: 1.4; }
     .anexo-checkout-box input[type="file"] { width: 100%; font-size: 13px; background: #fff; border: 1px solid #ccc; border-radius: 6px; padding: 7px; box-sizing: border-box; }
@@ -279,7 +280,7 @@
             <input class="campo" type="text" id="nome-cliente" placeholder="Seu nome completo">
             <input class="campo" type="tel" id="whats-cliente" placeholder="Seu WhatsApp com DDD">
 
-            <!-- Aparece apenas quando o pedido tem itens 01 a 06 -->
+            <!-- Escondido por padrão; aparece apenas quando o item clicado permite anexo -->
             <div class="anexo-checkout-box" id="box-anexo-arte">
               <label for="anexo-arte-checkout">Anexar foto ou arte:</label>
               <p>Envie aqui a imagem ou logo do seu pedido. Ajustamos o tamanho e a montagem para produção.</p>
@@ -322,8 +323,8 @@
     // CATÁLOGO DE VENDAS - NOTCH5 STUDIO CRIATIVO (12 ITENS)
     // Dica: aperte Ctrl + F e digite "ITEM 01" até "ITEM 12"
     // IMPORTANTE: No campo preco, use ponto (ex: 39.90) sem R$
-    // ITENS 01 a 06: exigeArte: true (mostra anexar arquivo)
-    // ITENS 07 a 12: exigeArte: false (sem anexar arquivo - eletro)
+    // ITENS 01 a 05: exigeArte: true (mostra anexar arquivo)
+    // ITENS 06 a 12: exigeArte: false (esconde anexar arquivo - eletro)
     // ============================================================
 
     var catalogoNotch5 = [
@@ -384,7 +385,7 @@
         descricao: "Descrição curta do produto 6.",
         preco: 0.00,
         imagem: "06.jpg",
-        exigeArte: true
+        exigeArte: false
       },
 
       // ======================== ITEM 07 ========================
@@ -456,6 +457,7 @@
     var WHATSAPP_LOJA = ""; // Opcional: coloque seu numero com DDD, ex: "5511999999999"
 
     var arteCheckoutArquivo = null;
+    var ultimoItemPermiteArte = false;
 
     function formatarReal(valor) {
       return "R$ " + Number(valor || 0).toFixed(2).replace(".", ",");
@@ -469,10 +471,11 @@
 
       catalogoNotch5.forEach(function(item, indice) {
         var precoNum = Number(item.preco) || 0;
-        var pedeArte = item.exigeArte !== false;
+        var numeroOrdem = indice + 1;
+        var pedeArte = item.exigeArte !== false && numeroOrdem <= 5;
         var card = document.createElement("div");
         card.className = "produto";
-        card.setAttribute("data-card-index", item.id || (indice + 1));
+        card.setAttribute("data-card-index", item.id || numeroOrdem);
 
         var topoCard = document.createElement("div");
 
@@ -531,9 +534,13 @@
     function atualizarVisibilidadeAnexo() {
       var boxAnexo = document.getElementById("box-anexo-arte");
       if (!boxAnexo) return;
-      var precisaArte = carrinho.some(function(item) { return item.exigeArte !== false; });
-      boxAnexo.style.display = precisaArte ? "block" : "none";
-      if (!precisaArte) {
+      var mostrar = ultimoItemPermiteArte && carrinho.some(function(item) { return item.exigeArte !== false; });
+      if (mostrar) {
+        boxAnexo.classList.add("visivel");
+        boxAnexo.style.display = "block";
+      } else {
+        boxAnexo.classList.remove("visivel");
+        boxAnexo.style.display = "none";
         limparAnexoArte();
       }
     }
@@ -736,7 +743,8 @@
     var pedidoAtual = null;
 
     function adicionarAoCarrinho(nome, preco, exigeArte) {
-      var pedeArte = exigeArte !== false;
+      var pedeArte = exigeArte === true;
+      ultimoItemPermiteArte = pedeArte;
       document.getElementById("titulo-aba-compra").textContent = "Comprar — " + nome;
       var existente = carrinho.find(function(item) { return item.nome === nome; });
       if (existente) {
@@ -754,6 +762,9 @@
       carrinho[index].qtd += delta;
       if (carrinho[index].qtd <= 0) {
         carrinho.splice(index, 1);
+      }
+      if (carrinho.length === 0) {
+        ultimoItemPermiteArte = false;
       }
       atualizarVisibilidadeAnexo();
       atualizarResumo();
