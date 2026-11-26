@@ -275,11 +275,12 @@
           </div>
 
           <div class="bloco-checkout">
-            <h3>2. Seus Dados e Arte</h3>
+            <h3>2. Seus Dados</h3>
             <input class="campo" type="text" id="nome-cliente" placeholder="Seu nome completo">
             <input class="campo" type="tel" id="whats-cliente" placeholder="Seu WhatsApp com DDD">
 
-            <div class="anexo-checkout-box">
+            <!-- Aparece apenas quando o pedido tem itens 01 a 06 -->
+            <div class="anexo-checkout-box" id="box-anexo-arte">
               <label for="anexo-arte-checkout">Anexar foto ou arte:</label>
               <p>Envie aqui a imagem ou logo do seu pedido. Ajustamos o tamanho e a montagem para produção.</p>
               <input type="file" id="anexo-arte-checkout" accept="image/*,.pdf" onchange="selecionarArteCheckout(this)">
@@ -321,6 +322,8 @@
     // CATÁLOGO DE VENDAS - NOTCH5 STUDIO CRIATIVO (12 ITENS)
     // Dica: aperte Ctrl + F e digite "ITEM 01" até "ITEM 12"
     // IMPORTANTE: No campo preco, use ponto (ex: 39.90) sem R$
+    // ITENS 01 a 06: exigeArte: true (mostra anexar arquivo)
+    // ITENS 07 a 12: exigeArte: false (sem anexar arquivo - eletro)
     // ============================================================
 
     var catalogoNotch5 = [
@@ -330,7 +333,8 @@
         nome: "Produto 1",
         descricao: "Descrição curta do produto 1.",
         preco: 15.00,
-        imagem: "item-1.jpg"
+        imagem: "item-1.jpg",
+        exigeArte: true
       },
 
       // ======================== ITEM 02 ========================
@@ -339,7 +343,8 @@
         nome: "Produto 2",
         descricao: "Descrição curta do produto 2.",
         preco: 25.00,
-        imagem: "item-2.jpg"
+        imagem: "item-2.jpg",
+        exigeArte: true
       },
 
       // ======================== ITEM 03 ========================
@@ -348,7 +353,8 @@
         nome: "Produto 3",
         descricao: "Descrição curta do produto 3.",
         preco: 0.00,
-        imagem: "03.jpg"
+        imagem: "03.jpg",
+        exigeArte: true
       },
 
       // ======================== ITEM 04 ========================
@@ -357,7 +363,8 @@
         nome: "Produto 4",
         descricao: "Descrição curta do produto 4.",
         preco: 0.00,
-        imagem: "04.jpg"
+        imagem: "04.jpg",
+        exigeArte: true
       },
 
       // ======================== ITEM 05 ========================
@@ -366,7 +373,8 @@
         nome: "Produto 5",
         descricao: "Descrição curta do produto 5.",
         preco: 0.00,
-        imagem: "05.jpg"
+        imagem: "05.jpg",
+        exigeArte: true
       },
 
       // ======================== ITEM 06 ========================
@@ -375,7 +383,8 @@
         nome: "Produto 6",
         descricao: "Descrição curta do produto 6.",
         preco: 0.00,
-        imagem: "06.jpg"
+        imagem: "06.jpg",
+        exigeArte: true
       },
 
       // ======================== ITEM 07 ========================
@@ -384,7 +393,8 @@
         nome: "Produto 7",
         descricao: "Descrição curta do produto 7.",
         preco: 0.00,
-        imagem: "07.jpg"
+        imagem: "07.jpg",
+        exigeArte: false
       },
 
       // ======================== ITEM 08 ========================
@@ -393,7 +403,8 @@
         nome: "Produto 8",
         descricao: "Descrição curta do produto 8.",
         preco: 0.00,
-        imagem: "08.jpg"
+        imagem: "08.jpg",
+        exigeArte: false
       },
 
       // ======================== ITEM 09 ========================
@@ -402,7 +413,8 @@
         nome: "Produto 9",
         descricao: "Descrição curta do produto 9.",
         preco: 0.00,
-        imagem: "09.jpg"
+        imagem: "09.jpg",
+        exigeArte: false
       },
 
       // ======================== ITEM 10 ========================
@@ -411,7 +423,8 @@
         nome: "Produto 10",
         descricao: "Descrição curta do produto 10.",
         preco: 0.00,
-        imagem: "10.jpg"
+        imagem: "10.jpg",
+        exigeArte: false
       },
 
       // ======================== ITEM 11 ========================
@@ -420,7 +433,8 @@
         nome: "Produto 11",
         descricao: "Descrição curta do produto 11.",
         preco: 0.00,
-        imagem: "11.jpg"
+        imagem: "11.jpg",
+        exigeArte: false
       },
 
       // ======================== ITEM 12 ========================
@@ -429,7 +443,8 @@
         nome: "Produto 12",
         descricao: "Descrição curta do produto 12.",
         preco: 1.99,
-        imagem: "12.jpg"
+        imagem: "12.jpg",
+        exigeArte: false
       }
     ];
 
@@ -454,6 +469,7 @@
 
       catalogoNotch5.forEach(function(item, indice) {
         var precoNum = Number(item.preco) || 0;
+        var pedeArte = item.exigeArte !== false;
         var card = document.createElement("div");
         card.className = "produto";
         card.setAttribute("data-card-index", item.id || (indice + 1));
@@ -490,7 +506,7 @@
         btnComprar.type = "button";
         btnComprar.textContent = "Comprar";
         btnComprar.onclick = function() {
-          adicionarAoCarrinho(item.nome, precoNum);
+          adicionarAoCarrinho(item.nome, precoNum, pedeArte);
         };
 
         baseCard.appendChild(precoEl);
@@ -503,6 +519,24 @@
     }
 
     renderizarVitrine();
+
+    function limparAnexoArte() {
+      arteCheckoutArquivo = null;
+      var inputArquivo = document.getElementById("anexo-arte-checkout");
+      var statusEl = document.getElementById("status-anexo-checkout");
+      if (inputArquivo) inputArquivo.value = "";
+      if (statusEl) statusEl.textContent = "";
+    }
+
+    function atualizarVisibilidadeAnexo() {
+      var boxAnexo = document.getElementById("box-anexo-arte");
+      if (!boxAnexo) return;
+      var precisaArte = carrinho.some(function(item) { return item.exigeArte !== false; });
+      boxAnexo.style.display = precisaArte ? "block" : "none";
+      if (!precisaArte) {
+        limparAnexoArte();
+      }
+    }
 
     function selecionarArteCheckout(input) {
       var statusEl = document.getElementById("status-anexo-checkout");
@@ -701,14 +735,17 @@
     var carrinho = [];
     var pedidoAtual = null;
 
-    function adicionarAoCarrinho(nome, preco) {
+    function adicionarAoCarrinho(nome, preco, exigeArte) {
+      var pedeArte = exigeArte !== false;
       document.getElementById("titulo-aba-compra").textContent = "Comprar — " + nome;
       var existente = carrinho.find(function(item) { return item.nome === nome; });
       if (existente) {
         existente.qtd += 1;
+        existente.exigeArte = pedeArte;
       } else {
-        carrinho.push({ nome: nome, preco: preco, qtd: 1 });
+        carrinho.push({ nome: nome, preco: preco, qtd: 1, exigeArte: pedeArte });
       }
+      atualizarVisibilidadeAnexo();
       atualizarResumo();
       abrirCarrinho();
     }
@@ -718,6 +755,7 @@
       if (carrinho[index].qtd <= 0) {
         carrinho.splice(index, 1);
       }
+      atualizarVisibilidadeAnexo();
       atualizarResumo();
     }
 
@@ -787,6 +825,7 @@
     }
 
     function abrirCarrinho() {
+      atualizarVisibilidadeAnexo();
       document.getElementById("overlay-carrinho").classList.add("ativo");
     }
 
