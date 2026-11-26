@@ -106,6 +106,14 @@
     .anexo-checkout-box p { font-size: 12.5px; color: #555; margin: 0 0 8px 0; line-height: 1.4; }
     .anexo-checkout-box input[type="file"] { width: 100%; font-size: 13px; background: #fff; border: 1px solid #ccc; border-radius: 6px; padding: 7px; box-sizing: border-box; }
     .status-anexo-checkout { font-size: 12.5px; color: #0a7; font-weight: bold; margin-top: 6px; }
+
+    /* Player de vídeo rápido no checkout (itens 01 a 05) */
+    .video-checkout-box { display: none; margin-top: 14px; }
+    .video-checkout-box.visivel { display: block; }
+    .video-checkout-titulo { font-size: 14px; font-weight: bold; color: #111; margin: 0 0 8px; }
+    .video-checkout-frame-wrap { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #111; }
+    .video-checkout-frame-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+
     .linha-cep { display: flex; gap: 8px; margin-bottom: 8px; }
     .linha-cep input { flex: 1; margin-bottom: 0; }
     .btn-cep { background: #111; color: #fff; border: none; padding: 0 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
@@ -288,6 +296,20 @@
               <div class="status-anexo-checkout" id="status-anexo-checkout"></div>
             </div>
           </div>
+
+          <!-- Vídeo curto de demonstração da personalização (apenas itens 01 a 05) -->
+          <div class="video-checkout-box" id="box-video-produto">
+            <p class="video-checkout-titulo">Veja como fica a personalização:</p>
+            <div class="video-checkout-frame-wrap">
+              <iframe
+                id="player-video-produto"
+                src=""
+                title="Demonstração da personalização"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
         </div>
 
         <div class="box-pix" id="box-pix-pagamento">
@@ -323,8 +345,8 @@
     // CATÁLOGO DE VENDAS - NOTCH5 STUDIO CRIATIVO (12 ITENS)
     // Dica: aperte Ctrl + F e digite "ITEM 01" até "ITEM 12"
     // IMPORTANTE: No campo preco, use ponto (ex: 39.90) sem R$
-    // ITENS 01 a 05: exigeArte: true (mostra anexar arquivo)
-    // ITENS 06 a 12: exigeArte: false (esconde anexar arquivo - eletro)
+    // ITENS 01 a 05: exigeArte: true + videoId do YouTube (só o código do vídeo)
+    // ITENS 06 a 12: exigeArte: false (sem anexo e sem vídeo)
     // ============================================================
 
     var catalogoNotch5 = [
@@ -335,7 +357,8 @@
         descricao: "Descrição curta do produto 1.",
         preco: 15.00,
         imagem: "item-1.jpg",
-        exigeArte: true
+        exigeArte: true,
+        videoId: ""
       },
 
       // ======================== ITEM 02 ========================
@@ -345,7 +368,8 @@
         descricao: "Descrição curta do produto 2.",
         preco: 25.00,
         imagem: "item-2.jpg",
-        exigeArte: true
+        exigeArte: true,
+        videoId: ""
       },
 
       // ======================== ITEM 03 ========================
@@ -355,7 +379,8 @@
         descricao: "Descrição curta do produto 3.",
         preco: 0.00,
         imagem: "03.jpg",
-        exigeArte: true
+        exigeArte: true,
+        videoId: ""
       },
 
       // ======================== ITEM 04 ========================
@@ -365,7 +390,8 @@
         descricao: "Descrição curta do produto 4.",
         preco: 0.00,
         imagem: "04.jpg",
-        exigeArte: true
+        exigeArte: true,
+        videoId: ""
       },
 
       // ======================== ITEM 05 ========================
@@ -375,7 +401,8 @@
         descricao: "Descrição curta do produto 5.",
         preco: 0.00,
         imagem: "05.jpg",
-        exigeArte: true
+        exigeArte: true,
+        videoId: ""
       },
 
       // ======================== ITEM 06 ========================
@@ -458,6 +485,7 @@
 
     var arteCheckoutArquivo = null;
     var ultimoItemPermiteArte = false;
+    var ultimoVideoIdAtivo = "";
 
     function formatarReal(valor) {
       return "R$ " + Number(valor || 0).toFixed(2).replace(".", ",");
@@ -473,6 +501,7 @@
         var precoNum = Number(item.preco) || 0;
         var numeroOrdem = indice + 1;
         var pedeArte = item.exigeArte !== false && numeroOrdem <= 5;
+        var vidId = pedeArte ? (item.videoId || "").trim() : "";
         var card = document.createElement("div");
         card.className = "produto";
         card.setAttribute("data-card-index", item.id || numeroOrdem);
@@ -509,7 +538,7 @@
         btnComprar.type = "button";
         btnComprar.textContent = "Comprar";
         btnComprar.onclick = function() {
-          adicionarAoCarrinho(item.nome, precoNum, pedeArte);
+          adicionarAoCarrinho(item.nome, precoNum, pedeArte, vidId);
         };
 
         baseCard.appendChild(precoEl);
@@ -531,17 +560,37 @@
       if (statusEl) statusEl.textContent = "";
     }
 
-    function atualizarVisibilidadeAnexo() {
+    function atualizarVisibilidadeAnexoEVideo() {
       var boxAnexo = document.getElementById("box-anexo-arte");
-      if (!boxAnexo) return;
+      var boxVideo = document.getElementById("box-video-produto");
+      var playerVideo = document.getElementById("player-video-produto");
+
       var mostrar = ultimoItemPermiteArte && carrinho.some(function(item) { return item.exigeArte !== false; });
-      if (mostrar) {
-        boxAnexo.classList.add("visivel");
-        boxAnexo.style.display = "block";
-      } else {
-        boxAnexo.classList.remove("visivel");
-        boxAnexo.style.display = "none";
-        limparAnexoArte();
+
+      if (boxAnexo) {
+        if (mostrar) {
+          boxAnexo.classList.add("visivel");
+          boxAnexo.style.display = "block";
+        } else {
+          boxAnexo.classList.remove("visivel");
+          boxAnexo.style.display = "none";
+          limparAnexoArte();
+        }
+      }
+
+      if (boxVideo && playerVideo) {
+        if (mostrar && ultimoVideoIdAtivo) {
+          var embedUrl = "https://www.youtube.com/embed/" + encodeURIComponent(ultimoVideoIdAtivo);
+          if (playerVideo.src !== embedUrl) {
+            playerVideo.src = embedUrl;
+          }
+          boxVideo.classList.add("visivel");
+          boxVideo.style.display = "block";
+        } else {
+          playerVideo.src = "";
+          boxVideo.classList.remove("visivel");
+          boxVideo.style.display = "none";
+        }
       }
     }
 
@@ -742,18 +791,20 @@
     var carrinho = [];
     var pedidoAtual = null;
 
-    function adicionarAoCarrinho(nome, preco, exigeArte) {
+    function adicionarAoCarrinho(nome, preco, exigeArte, videoId) {
       var pedeArte = exigeArte === true;
       ultimoItemPermiteArte = pedeArte;
+      ultimoVideoIdAtivo = pedeArte ? (videoId || "") : "";
       document.getElementById("titulo-aba-compra").textContent = "Comprar — " + nome;
       var existente = carrinho.find(function(item) { return item.nome === nome; });
       if (existente) {
         existente.qtd += 1;
         existente.exigeArte = pedeArte;
+        existente.videoId = pedeArte ? (videoId || "") : "";
       } else {
-        carrinho.push({ nome: nome, preco: preco, qtd: 1, exigeArte: pedeArte });
+        carrinho.push({ nome: nome, preco: preco, qtd: 1, exigeArte: pedeArte, videoId: pedeArte ? (videoId || "") : "" });
       }
-      atualizarVisibilidadeAnexo();
+      atualizarVisibilidadeAnexoEVideo();
       atualizarResumo();
       abrirCarrinho();
     }
@@ -765,8 +816,13 @@
       }
       if (carrinho.length === 0) {
         ultimoItemPermiteArte = false;
+        ultimoVideoIdAtivo = "";
+      } else {
+        var ultimo = carrinho[carrinho.length - 1];
+        ultimoItemPermiteArte = ultimo.exigeArte !== false;
+        ultimoVideoIdAtivo = ultimoItemPermiteArte ? (ultimo.videoId || "") : "";
       }
-      atualizarVisibilidadeAnexo();
+      atualizarVisibilidadeAnexoEVideo();
       atualizarResumo();
     }
 
@@ -836,11 +892,13 @@
     }
 
     function abrirCarrinho() {
-      atualizarVisibilidadeAnexo();
+      atualizarVisibilidadeAnexoEVideo();
       document.getElementById("overlay-carrinho").classList.add("ativo");
     }
 
     function fecharCarrinho() {
+      var playerVideo = document.getElementById("player-video-produto");
+      if (playerVideo) playerVideo.src = "";
       document.getElementById("overlay-carrinho").classList.remove("ativo");
     }
 
