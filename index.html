@@ -377,7 +377,43 @@
         nome: "Produto 01",
         descricao: "Descrição curta do produto 1.",
         preco: 15.00,
-        imagem: "01.jpg",
+        imagem: "01JFIF",
+        exigeArte: true,
+        videoId: ""
+      },
+
+      // ======================== ITEM 02 ========================
+      {
+        id: "02",
+        secao: "secao-sublimacao",
+        nome: "Produto 02",
+        descricao: "Descrição curta do produto 2.",
+        preco: 25.00,
+        imagem: "item-2.jpg",
+        exigeArte: true,
+        videoId: ""
+      },
+
+      // ======================== ITEM 03 ========================
+      {
+        id: "03",
+        secao: "secao-sublimacao",
+        nome: "Produto 3",
+        descricao: "Descrição curta do produto 3.",
+        preco: 0.00,
+        imagem: "03.jpg",
+        exigeArte: true,
+        videoId: ""
+      },
+
+      // ======================== ITEM 04 ========================
+      {
+        id: "04",
+        secao: "secao-sublimacao",
+        nome: "Produto 4",
+        descricao: "Descrição curta do produto 4.",
+        preco: 0.00,
+        imagem: "04.jpg",
         exigeArte: true,
         videoId: ""
       },
@@ -386,11 +422,11 @@
       {
         id: "05",
         secao: "secao-eletrica",
-        nome: "Fita Isolante PVC Worker Preta 19mm x 10m (Cód. 96903)",
-        descricao: "Fita isolante antichama 19mm x 10m Worker Preta — ideal para instalações elétricas profissionais e residenciais. Lote disponível para venda avulsa ou caixa.",
-        preco: 4.50,
+        nome: "Produto 5",
+        descricao: "Descrição curta do produto 5.",
+        preco: 0.00,
         imagem: "05.jpg",
-        exigeArte: false,
+        exigeArte: true,
         videoId: ""
       },
 
@@ -398,10 +434,82 @@
       {
         id: "06",
         secao: "secao-eletrica",
-        nome: "Fita Isolante Colorida Steck 19mm x 10m (Identificação de Fases)",
-        descricao: "Fita isolante colorida Steck 10 metros para identificação de fases, quadros elétricos, eventos e manutenção predial.",
-        preco: 5.50,
+        nome: "Produto 6",
+        descricao: "Descrição curta do produto 6.",
+        preco: 0.00,
         imagem: "06.jpg",
+        exigeArte: false,
+        videoId: ""
+      },
+
+      // ======================== ITEM 07 ========================
+      {
+        id: "07",
+        secao: "secao-eletrica",
+        nome: "Produto 7",
+        descricao: "Descrição curta do produto 7.",
+        preco: 0.00,
+        imagem: "07.jpg",
+        exigeArte: false,
+        videoId: ""
+      },
+
+      // ======================== ITEM 08 ========================
+      {
+        id: "08",
+        secao: "secao-eletrica",
+        nome: "Produto 8",
+        descricao: "Descrição curta do produto 8.",
+        preco: 0.00,
+        imagem: "08.jpg",
+        exigeArte: false,
+        videoId: ""
+      },
+
+      // ======================== ITEM 09 ========================
+      {
+        id: "09",
+        secao: "secao-turismo",
+        nome: "Produto 9",
+        descricao: "Descrição curta do produto 9.",
+        preco: 0.00,
+        imagem: "09.jpg",
+        exigeArte: false,
+        videoId: ""
+      },
+
+      // ======================== ITEM 10 ========================
+      {
+        id: "10",
+        secao: "secao-turismo",
+        nome: "Produto 10",
+        descricao: "Descrição curta do produto 10.",
+        preco: 0.00,
+        imagem: "10.jpg",
+        exigeArte: false,
+        videoId: ""
+      },
+
+      // ======================== ITEM 11 ========================
+      {
+        id: "11",
+        secao: "secao-turismo",
+        nome: "Produto 11",
+        descricao: "Descrição curta do produto 11.",
+        preco: 0.00,
+        imagem: "11.jpg",
+        exigeArte: false,
+        videoId: ""
+      },
+
+      // ======================== ITEM 12 ========================
+      {
+        id: "12",
+        secao: "secao-turismo",
+        nome: "Produto 12",
+        descricao: "Descrição curta do produto 12.",
+        preco: 1.99,
+        imagem: "12.jpg",
         exigeArte: false,
         videoId: ""
       }
@@ -416,6 +524,636 @@
 
     // Duração em milissegundos da rolagem suave ao clicar em "Confira" (ajuste aqui se quiser mais lento/rápido)
     var DURACAO_ROLAGEM_MS = 1100;
+
+    var arteCheckoutArquivo = null;
+    var ultimoItemPermiteArte = false;
+    var ultimoVideoAtivo = null;
+
+    function formatarReal(valor) {
+      return "R$ " + Number(valor || 0).toFixed(2).replace(".", ",");
+    }
+
+    function rolarParaSecao(event, idSecao) {
+      if (event) event.preventDefault();
+      var alvo = document.getElementById(idSecao);
+      if (!alvo) return;
+
+      var offsetTopo = 20;
+      var destinoY = alvo.getBoundingClientRect().top + window.scrollY - offsetTopo;
+      var inicioY = window.scrollY;
+      var distancia = destinoY - inicioY;
+      var inicioTempo = null;
+
+      function animarPasso(timestamp) {
+        if (!inicioTempo) inicioTempo = timestamp;
+        var decorrido = timestamp - inicioTempo;
+        var progresso = Math.min(decorrido / DURACAO_ROLAGEM_MS, 1);
+        // Desaceleração suave na chegada
+        var ease = 1 - Math.pow(1 - progresso, 3);
+        window.scrollTo(0, inicioY + distancia * ease);
+        if (decorrido < DURACAO_ROLAGEM_MS) {
+          requestAnimationFrame(animarPasso);
+        }
+      }
+
+      requestAnimationFrame(animarPasso);
+    }
+
+    // Monta as seções e os 12 cards automaticamente lendo o catálogo acima
+    function renderizarVitrine() {
+      var container = document.getElementById("vitrine-produtos");
+      if (!container) return;
+      container.innerHTML = "";
+
+      secoesCatalogo.forEach(function(secao) {
+        var itensDaSecao = catalogoNotch5.filter(function(item) {
+          return item.secao === secao.id;
+        });
+
+        var blocoSecao = document.createElement("section");
+        blocoSecao.className = "secao-categoria";
+        blocoSecao.id = secao.id;
+
+        var tituloSecao = document.createElement("h3");
+        tituloSecao.className = "secao-titulo";
+        tituloSecao.textContent = secao.titulo;
+
+        var grade = document.createElement("div");
+        grade.className = "vitrine";
+
+        itensDaSecao.forEach(function(item) {
+          var indiceGlobal = catalogoNotch5.indexOf(item);
+          var numeroOrdem = indiceGlobal + 1;
+          var precoNum = Number(item.preco) || 0;
+          var itemIdStr = item.id || String(numeroOrdem).padStart(2, "0");
+          var itemNomeStr = item.nome || "Produto";
+          var itemDescStr = item.descricao || "";
+          var pedeArte = item.exigeArte !== false && numeroOrdem <= 5;
+          var vidId = (item.videoId || "").trim();
+
+          var card = document.createElement("div");
+          card.className = "produto";
+          card.setAttribute("data-card-index", itemIdStr);
+
+          var topoCard = document.createElement("div");
+
+          var imgBox = document.createElement("div");
+          imgBox.className = "produto-img-box";
+
+          var img = document.createElement("img");
+          img.src = item.imagem || "";
+          img.alt = itemNomeStr;
+          img.onerror = function() { this.style.display = "none"; };
+          imgBox.appendChild(img);
+
+          var titulo = document.createElement("h3");
+          titulo.textContent = itemNomeStr;
+
+          var desc = document.createElement("p");
+          desc.textContent = itemDescStr;
+
+          topoCard.appendChild(imgBox);
+          topoCard.appendChild(titulo);
+          topoCard.appendChild(desc);
+
+          var baseCard = document.createElement("div");
+
+          var precoEl = document.createElement("div");
+          precoEl.className = "preco";
+          precoEl.textContent = formatarReal(precoNum);
+
+          var btnComprar = document.createElement("button");
+          btnComprar.className = "btn-comprar";
+          btnComprar.type = "button";
+          btnComprar.textContent = "Comprar";
+          btnComprar.onclick = function() {
+            adicionarAoCarrinho(itemNomeStr, precoNum, pedeArte, {
+              id: itemIdStr,
+              nome: itemNomeStr,
+              descricao: itemDescStr,
+              videoId: vidId
+            });
+          };
+
+          baseCard.appendChild(precoEl);
+          baseCard.appendChild(btnComprar);
+
+          card.appendChild(topoCard);
+          card.appendChild(baseCard);
+          grade.appendChild(card);
+        });
+
+        blocoSecao.appendChild(tituloSecao);
+        blocoSecao.appendChild(grade);
+        container.appendChild(blocoSecao);
+      });
+    }
+
+    renderizarVitrine();
+
+    function limparAnexoArte() {
+      arteCheckoutArquivo = null;
+      var inputArquivo = document.getElementById("anexo-arte-checkout");
+      var statusEl = document.getElementById("status-anexo-checkout");
+      if (inputArquivo) inputArquivo.value = "";
+      if (statusEl) statusEl.textContent = "";
+    }
+
+    function atualizarVisibilidadeAnexoEVideo() {
+      var boxAnexo = document.getElementById("box-anexo-arte");
+      var boxVideo = document.getElementById("box-video-produto");
+      var playerVideo = document.getElementById("player-video-produto");
+      var elId = document.getElementById("video-item-id");
+      var elNome = document.getElementById("video-item-nome");
+      var elDesc = document.getElementById("video-item-descricao");
+
+      var mostrarAnexo = ultimoItemPermiteArte && carrinho.some(function(item) { return item.exigeArte !== false; });
+
+      if (boxAnexo) {
+        if (mostrarAnexo) {
+          boxAnexo.classList.add("visivel");
+          boxAnexo.style.display = "block";
+        } else {
+          boxAnexo.classList.remove("visivel");
+          boxAnexo.style.display = "none";
+          limparAnexoArte();
+        }
+      }
+
+      if (boxVideo && playerVideo) {
+        var vid = ultimoVideoAtivo && ultimoVideoAtivo.videoId ? ultimoVideoAtivo.videoId.trim() : "";
+        if (carrinho.length > 0 && vid) {
+          if (elId) elId.textContent = ultimoVideoAtivo.id || "";
+          if (elNome) elNome.textContent = ultimoVideoAtivo.nome || "";
+          if (elDesc) elDesc.textContent = ultimoVideoAtivo.descricao || "";
+
+          var embedUrl = "https://www.youtube.com/embed/" + encodeURIComponent(vid);
+          if (playerVideo.src !== embedUrl) {
+            playerVideo.src = embedUrl;
+          }
+          boxVideo.classList.add("visivel");
+          boxVideo.style.display = "block";
+        } else {
+          playerVideo.src = "";
+          boxVideo.classList.remove("visivel");
+          boxVideo.style.display = "none";
+        }
+      }
+    }
+
+    function selecionarArteCheckout(input) {
+      var statusEl = document.getElementById("status-anexo-checkout");
+      if (!input.files || !input.files[0]) {
+        arteCheckoutArquivo = null;
+        statusEl.textContent = "";
+        return;
+      }
+      arteCheckoutArquivo = input.files[0];
+      statusEl.textContent = "Arquivo anexado: " + arteCheckoutArquivo.name;
+    }
+
+    async function enviarDadosEArteFormspree(dados, meioPagamento) {
+      if (!FORMSPREE_ENDPOINT || FORMSPREE_ENDPOINT.indexOf("SEU_ID_AQUI") !== -1) {
+        return true;
+      }
+
+      var formData = new FormData();
+      formData.append("_subject", "Novo Pedido NOTCH5 (" + dados.numeroPedido + ") - " + meioPagamento);
+      formData.append("pedido", dados.numeroPedido);
+      formData.append("meio_pagamento", meioPagamento);
+      formData.append("cliente", dados.nome);
+      formData.append("whatsapp", dados.whats);
+      formData.append("itens", dados.itens);
+      formData.append("entrega", dados.entrega);
+      formData.append("cep", dados.cep);
+      formData.append("endereco", dados.endereco);
+      formData.append("total", formatarReal(dados.total));
+
+      if (arteCheckoutArquivo) {
+        formData.append("anexo_arte_pedido", arteCheckoutArquivo, arteCheckoutArquivo.name);
+      }
+
+      try {
+        var resposta = await fetch(FORMSPREE_ENDPOINT, {
+          method: "POST",
+          body: formData,
+          headers: { "Accept": "application/json" }
+        });
+        return resposta.ok;
+      } catch (erro) {
+        return false;
+      }
+    }
+
+    var slideAtual = 0;
+    var trilho = document.getElementById("slider-trilho");
+    var totalSlides = document.querySelectorAll(".slide").length;
+    var pontos = document.querySelectorAll(".ponto");
+
+    function mostrarSlide(indice) {
+      if (indice >= totalSlides) slideAtual = 0;
+      else if (indice < 0) slideAtual = totalSlides - 1;
+      else slideAtual = indice;
+
+      trilho.style.transform = "translateX(-" + (slideAtual * 100) + "%)";
+      pontos.forEach(function(p) { p.classList.remove("ativo"); });
+      pontos[slideAtual].classList.add("ativo");
+    }
+
+    function mudarSlide(direcao) {
+      mostrarSlide(slideAtual + direcao);
+    }
+
+    function irParaSlide(indice) {
+      mostrarSlide(indice);
+    }
+
+    setInterval(function() {
+      mudarSlide(1);
+    }, 4000);
+
+    var rodapeAtual = 0;
+    var rodapeSlides = document.querySelectorAll(".rodape-slide");
+    setInterval(function() {
+      rodapeSlides[rodapeAtual].classList.remove("ativo");
+      rodapeAtual = (rodapeAtual + 1) % rodapeSlides.length;
+      rodapeSlides[rodapeAtual].classList.add("ativo");
+    }, 3500);
+
+    function alternarMaisInformacoes() {
+      var caixa = document.getElementById("conteudo-mais-info");
+      var botao = document.getElementById("btn-mais-info");
+      var aberto = caixa.classList.toggle("aberto");
+      botao.innerHTML = aberto ? "MENOS INFORMAÇÕES &#708;" : "MAIS INFORMAÇÕES &#709;";
+    }
+
+    function alternarLeituraQuemSomos() {
+      var resto = document.getElementById("quem-somos-resto");
+      var botao = document.getElementById("btn-ler-mais-texto");
+      var aberto = resto.classList.toggle("aberto");
+      botao.textContent = aberto ? "Mostrar menos" : "Ler mais";
+    }
+
+    function alternarLeituraEntrega() {
+      var resto = document.getElementById("entrega-resto");
+      var botao = document.getElementById("btn-ler-mais-entrega");
+      var aberto = resto.classList.toggle("aberto");
+      botao.textContent = aberto ? "Mostrar menos" : "Leia mais";
+    }
+
+    var freteCalculado = 0;
+    var prazoEstimadoTexto = "3 a 5 dias úteis (produção para personalizados)";
+
+    function calcularFreteEPrazoPorCep(cepLimpo, uf, localidade) {
+      var prefixo = parseInt(cepLimpo.slice(0, 5), 10);
+      var cidadeNorm = (localidade || "").toLowerCase();
+
+      if (prefixo >= 9900 && prefixo <= 9999 && cidadeNorm.indexOf("diadema") !== -1) {
+        return {
+          valor: 12.00,
+          prazo: "3 a 5 dias úteis (produção) + até 1 dia útil de entrega"
+        };
+      }
+
+      if (prefixo >= 1000 && prefixo <= 9999) {
+        return {
+          valor: 18.00,
+          prazo: "3 a 5 dias úteis (produção) + 1 a 2 dias úteis de entrega"
+        };
+      }
+
+      if (uf === "SP" || (prefixo >= 11000 && prefixo <= 19999)) {
+        return {
+          valor: 24.00,
+          prazo: "3 a 5 dias úteis (produção) + 2 a 4 dias úteis de envio"
+        };
+      }
+
+      if (["RJ", "MG", "ES", "PR", "SC", "RS"].indexOf(uf) !== -1) {
+        return {
+          valor: 32.00,
+          prazo: "3 a 5 dias úteis (produção) + 3 a 6 dias úteis de envio"
+        };
+      }
+
+      return {
+        valor: 42.00,
+        prazo: "3 a 5 dias úteis (produção) + 4 a 8 dias úteis de envio"
+      };
+    }
+
+    function aplicarDadosCep(cepFormatado, dados) {
+      var calculo = calcularFreteEPrazoPorCep(cepFormatado.replace(/\D/g, ""), dados.uf, dados.localidade);
+      freteCalculado = calculo.valor;
+      prazoEstimadoTexto = calculo.prazo;
+
+      var enderecoCompleto =
+        (dados.logradouro || "") + ", Nº  - " + (dados.bairro || "") + ", " + dados.localidade + "/" + dados.uf;
+
+      document.getElementById("cep-topo-input").value = cepFormatado;
+      document.getElementById("texto-cep-topo").innerHTML =
+        "Enviar para <strong>" + dados.localidade + "/" + dados.uf + "</strong> (" + cepFormatado + ") — Frete: <strong>" + formatarReal(freteCalculado) + "</strong>";
+
+      var resultadoTopo = document.getElementById("resultado-cep-topo");
+      resultadoTopo.style.display = "block";
+      resultadoTopo.textContent = "Prazo estimado: " + prazoEstimadoTexto + ".";
+
+      document.getElementById("cep-cliente").value = cepFormatado;
+      document.getElementById("endereco-cliente").value = enderecoCompleto;
+      document.getElementById("tipo-entrega").value = "Entrega / Envio";
+      document.getElementById("status-cep").textContent =
+        "Frete: " + formatarReal(freteCalculado) + " | Prazo: " + prazoEstimadoTexto + ".";
+      atualizarResumo();
+    }
+
+    function consultarCepTopo() {
+      var inputTopo = document.getElementById("cep-topo-input");
+      var cep = inputTopo.value.replace(/\D/g, "");
+      var resultadoTopo = document.getElementById("resultado-cep-topo");
+
+      if (cep.length !== 8) {
+        resultadoTopo.style.display = "block";
+        resultadoTopo.textContent = "Digite um CEP válido com 8 números (ex: 09900-000).";
+        return;
+      }
+
+      var cepFormatado = cep.slice(0, 5) + "-" + cep.slice(5);
+      resultadoTopo.style.display = "block";
+      resultadoTopo.textContent = "Calculando frete e prazo para " + cepFormatado + "...";
+
+      fetch("https://viacep.com.br/ws/" + cep + "/json/")
+        .then(function(r) { return r.json(); })
+        .then(function(dados) {
+          if (dados.erro) {
+            resultadoTopo.textContent = "CEP não encontrado. Confira os números digitados.";
+          } else {
+            aplicarDadosCep(cepFormatado, dados);
+          }
+        })
+        .catch(function() {
+          resultadoTopo.textContent = "Não foi possível consultar agora. Você pode informar no carrinho.";
+        });
+    }
+
+    var carrinho = [];
+    var pedidoAtual = null;
+
+    function adicionarAoCarrinho(nome, preco, exigeArte, infoVideo) {
+      var pedeArte = exigeArte === true;
+      var metaVideo = infoVideo && typeof infoVideo === "object"
+        ? {
+            id: infoVideo.id || "",
+            nome: infoVideo.nome || nome,
+            descricao: infoVideo.descricao || "",
+            videoId: (infoVideo.videoId || "").trim()
+          }
+        : {
+            id: "",
+            nome: nome,
+            descricao: "",
+            videoId: String(infoVideo || "").trim()
+          };
+
+      ultimoItemPermiteArte = pedeArte;
+      ultimoVideoAtivo = metaVideo;
+      document.getElementById("titulo-aba-compra").textContent = "Comprar — " + nome;
+      var existente = carrinho.find(function(item) { return item.nome === nome; });
+      if (existente) {
+        existente.qtd += 1;
+        existente.exigeArte = pedeArte;
+        existente.metaVideo = metaVideo;
+      } else {
+        carrinho.push({ nome: nome, preco: preco, qtd: 1, exigeArte: pedeArte, metaVideo: metaVideo });
+      }
+      atualizarVisibilidadeAnexoEVideo();
+      atualizarResumo();
+      abrirCarrinho();
+    }
+
+    function alterarQtd(index, delta) {
+      carrinho[index].qtd += delta;
+      if (carrinho[index].qtd <= 0) {
+        carrinho.splice(index, 1);
+      }
+      if (carrinho.length === 0) {
+        ultimoItemPermiteArte = false;
+        ultimoVideoAtivo = null;
+      } else {
+        var ultimo = carrinho[carrinho.length - 1];
+        ultimoItemPermiteArte = ultimo.exigeArte !== false;
+        ultimoVideoAtivo = ultimo.metaVideo || null;
+      }
+      atualizarVisibilidadeAnexoEVideo();
+      atualizarResumo();
+    }
+
+    function consultarCep() {
+      var cep = document.getElementById("cep-cliente").value.replace(/\D/g, "");
+      var status = document.getElementById("status-cep");
+      if (cep.length !== 8) {
+        status.textContent = "Informe um CEP válido com 8 números.";
+        return;
+      }
+      var cepFormatado = cep.slice(0, 5) + "-" + cep.slice(5);
+      status.textContent = "Calculando frete e prazo...";
+      fetch("https://viacep.com.br/ws/" + cep + "/json/")
+        .then(function(r) { return r.json(); })
+        .then(function(dados) {
+          if (dados.erro) {
+            status.textContent = "CEP não encontrado.";
+          } else {
+            aplicarDadosCep(cepFormatado, dados);
+          }
+        })
+        .catch(function() {
+          status.textContent = "Preencha o endereço manualmente abaixo.";
+        });
+    }
+
+    function atualizarResumo() {
+      var lista = document.getElementById("lista-itens-carrinho");
+      var contador = document.getElementById("contador-carrinho");
+      lista.innerHTML = "";
+      var totalItens = 0;
+      var subtotal = 0;
+
+      if (carrinho.length === 0) {
+        lista.innerHTML = '<p style="color:#666; font-size:14px;">Seu carrinho está vazio.</p>';
+      } else {
+        carrinho.forEach(function(item, i) {
+          totalItens += item.qtd;
+          subtotal += item.preco * item.qtd;
+          var div = document.createElement("div");
+          div.className = "item-carrinho";
+          div.innerHTML =
+            '<div class="item-info"><strong>' + item.nome + '</strong><span>' + formatarReal(item.preco) + ' cada</span></div>' +
+            '<div class="qtd-controles">' +
+              '<button type="button" onclick="alterarQtd(' + i + ', -1)">-</button>' +
+              '<span>' + item.qtd + '</span>' +
+              '<button type="button" onclick="alterarQtd(' + i + ', 1)">+</button>' +
+            '</div>';
+          lista.appendChild(div);
+        });
+      }
+
+      var tipoEntrega = document.getElementById("tipo-entrega").value;
+      var freteAtual = 0;
+
+      if (tipoEntrega === "Retirada no local") {
+        freteAtual = 0;
+        document.getElementById("valor-frete").textContent = "Grátis";
+      } else {
+        freteAtual = carrinho.length > 0 ? freteCalculado : 0;
+        document.getElementById("valor-frete").textContent = formatarReal(freteAtual);
+      }
+
+      contador.textContent = totalItens;
+      document.getElementById("valor-subtotal").textContent = formatarReal(subtotal);
+      document.getElementById("valor-total").textContent = formatarReal(subtotal + freteAtual);
+    }
+
+    function abrirCarrinho() {
+      atualizarVisibilidadeAnexoEVideo();
+      document.getElementById("overlay-carrinho").classList.add("ativo");
+    }
+
+    function fecharCarrinho() {
+      var playerVideo = document.getElementById("player-video-produto");
+      if (playerVideo) playerVideo.src = "";
+      document.getElementById("overlay-carrinho").classList.remove("ativo");
+    }
+
+    function validarPedidoAntesDePagar() {
+      if (carrinho.length === 0) {
+        alert("Adicione pelo menos um produto no carrinho.");
+        return null;
+      }
+      var nome = document.getElementById("nome-cliente").value.trim();
+      if (!nome) {
+        alert("Digite seu nome para continuar.");
+        return null;
+      }
+      var subtotal = carrinho.reduce(function(acc, item) { return acc + item.preco * item.qtd; }, 0);
+      var entrega = document.getElementById("tipo-entrega").value;
+      var freteAtual = entrega === "Retirada no local" ? 0 : freteCalculado;
+      var total = subtotal + freteAtual;
+
+      if (total <= 0) {
+        alert("O valor total do pedido está R$ 0,00. Defina um valor no produto antes de pagar.");
+        return null;
+      }
+
+      pedidoAtual = {
+        nome: nome,
+        whats: document.getElementById("whats-cliente").value.trim(),
+        cep: document.getElementById("cep-cliente").value.trim(),
+        endereco: document.getElementById("endereco-cliente").value.trim(),
+        entrega: entrega,
+        frete: freteAtual,
+        subtotal: subtotal,
+        total: total,
+        itens: carrinho.map(function(i) { return i.qtd + "x " + i.nome + " (" + formatarReal(i.preco * i.qtd) + ")"; }).join(", "),
+        numeroPedido: "N5-" + String(Date.now()).slice(-5)
+      };
+
+      return pedidoAtual;
+    }
+
+    async function pagarComMercadoPago() {
+      var dados = validarPedidoAntesDePagar();
+      if (!dados) return;
+
+      var btnMp = document.getElementById("btn-mp-checkout");
+      btnMp.disabled = true;
+      btnMp.textContent = arteCheckoutArquivo ? "Enviando dados e abrindo Mercado Pago..." : "Abrindo Mercado Pago...";
+
+      var enviado = await enviarDadosEArteFormspree(dados, "Mercado Pago");
+      btnMp.disabled = false;
+      btnMp.textContent = "Pagar com Mercado Pago";
+
+      if (!enviado) {
+        alert("Não foi possível enviar os dados pelo Formspree agora. Confira o link do Formspree ou tente novamente.");
+        return;
+      }
+
+      var urlBase = window.location.href.split("?")[0];
+      var sep = LINK_MERCADO_PAGO.indexOf("?") === -1 ? "?" : "&";
+      var urlMp = LINK_MERCADO_PAGO + sep +
+        "pedido=" + encodeURIComponent(dados.numeroPedido) +
+        "&back_url=" + encodeURIComponent(urlBase + "?pagamento=mercadopago&pedido=" + encodeURIComponent(dados.numeroPedido));
+
+      window.open(urlMp, "_blank", "noopener,noreferrer");
+    }
+
+    function pagarComPix() {
+      var dados = validarPedidoAntesDePagar();
+      if (!dados) return;
+
+      var boxPix = document.getElementById("box-pix-pagamento");
+      document.getElementById("info-pix-valor").textContent =
+        "Pedido " + dados.numeroPedido + " — Valor: " + formatarReal(dados.total) + " (" + NOME_RECEBEDOR_PIX + ")";
+      document.getElementById("codigo-pix-copia-cola").textContent =
+        CHAVE_PIX_LOJA || "Chave Pix ainda não configurada";
+      boxPix.classList.add("ativo");
+      boxPix.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function copiarPix() {
+      var codigo = document.getElementById("codigo-pix-copia-cola").textContent.trim();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(codigo).then(function() {
+          alert("Chave / Código Pix copiado!");
+        }).catch(function() {
+          alert("Chave Pix: " + codigo);
+        });
+      } else {
+        alert("Chave Pix: " + codigo);
+      }
+    }
+
+    async function enviarPedidoPix() {
+      var dados = pedidoAtual || validarPedidoAntesDePagar();
+      if (!dados) return;
+
+      await enviarDadosEArteFormspree(dados, "Pix");
+
+      var resumo =
+        "Pedido: " + dados.numeroPedido +
+        "\nPagamento: Pix (aguardando conferência no banco)" +
+        "\nCliente: " + dados.nome +
+        (dados.whats ? "\nWhatsApp: " + dados.whats : "") +
+        "\nItens: " + dados.itens +
+        (arteCheckoutArquivo ? "\nImagem anexada: " + arteCheckoutArquivo.name : "") +
+        "\nEntrega: " + dados.entrega + " (" + formatarReal(dados.frete) + ")" +
+        (dados.cep ? "\nCEP: " + dados.cep : "") +
+        (dados.endereco ? "\nEndereço: " + dados.endereco : "") +
+        "\nTotal: " + formatarReal(dados.total);
+
+      var box = document.getElementById("box-retorno-pagamento");
+      box.textContent = "Dados do pedido registrados na tela para conferência:\n" + resumo;
+      box.style.display = "block";
+
+      if (WHATSAPP_LOJA) {
+        var numeroLimpo = WHATSAPP_LOJA.replace(/\D/g, "");
+        window.open("https://wa.me/" + numeroLimpo + "?text=" + encodeURIComponent(resumo), "_blank", "noopener,noreferrer");
+      }
+    }
+
+    function verificarRetornoPagamento() {
+      var params = new URLSearchParams(window.location.search);
+      var retorno = params.get("pagamento");
+      var pedido = params.get("pedido") || "";
+      var box = document.getElementById("box-retorno-pagamento");
+
+      if (retorno || pedido) {
+        var texto = "Retorno de pagamento recebido.";
+        if (retorno) texto += "\nMeio: " + retorno;
+        if (pedido) texto += "\nPedido: " + pedido;
+        box.textContent = texto;
+        box.style.display = "block";
+        abrirCarrinho();
+      }
+    }
 
     verificarRetornoPagamento();
   </script>
